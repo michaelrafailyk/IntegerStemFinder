@@ -1,3 +1,5 @@
+## IntegerStemFinder
+
 A tool for planning weight interpolation and finding the closest integer (or closest to integer) stem or sidebearing. Features: interpolate and extrapolate; switch instance to master and vice versa; hide unnecessary weights; drag weight along the axis; adjust instance after interpolation; find a closest integer stem or sidebearing; switch between accurate and rounded values; see a visualization of stems and sidebearings; compare interpolation strategies using sets.
 
 The progression formulas are taken from a [comment of Linus Romer](https://typedrawers.com/discussion/comment/34545/#Comment_34545) on TypeDrawers. The idea of editable instances is inspired by a [comment of Abraham Lee](https://typedrawers.com/discussion/comment/43398/#Comment_43398). The idea of finding the closest integer stem or sidebearing is inspired by a [comment of George Thomas](https://typedrawers.com/discussion/comment/2754/#Comment_2754).
