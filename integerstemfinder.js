@@ -3,7 +3,7 @@
 	IntegerStemFinder v1.0
 	Licensed under the MIT License
 	Developed by Michael Rafailyk in 2025
-	https://github.com/rafailyk/integerstemfinder
+	https://github.com/michaelrafailyk/IntegerStemFinder
 
 */
 
