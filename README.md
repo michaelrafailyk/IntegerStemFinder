@@ -4,7 +4,7 @@ The progression formulas are taken from a [comment of Linus Romer](https://typed
 
 Online version: [michaelrafailyk.github.io/IntegerStemFinder](https://michaelrafailyk.github.io/IntegerStemFinder/)
 
-Video demonstrasion: [youtu.be/yZbrtoCHoXE](https://youtu.be/yZbrtoCHoXE)
+Video demonstration: [youtube.com/watch?v=yZbrtoCHoXE](https://www.youtube.com/watch?v=yZbrtoCHoXE)
 
 ![IntegerStemFinder preview](https://repository-images.githubusercontent.com/934969198/5a471259-8686-4439-8f21-5781f67df29c)
 
