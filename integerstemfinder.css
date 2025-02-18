@@ -1,0 +1,778 @@
+html, body {
+	height: 100%;
+}
+body, a, label, input {
+	margin: 0;
+	padding: 0;
+	border: none;
+	outline: none;
+	text-decoration: none;
+}
+body {
+	margin: 0;
+	padding: 0;
+	background: white;
+	color: black;
+	font-family: Helvetica, Arial, sans-serif;
+	font-size: 12px;
+	line-height: 1em;
+	-moz-font-feature-settings: 'kern';
+	-moz-osx-font-smoothing: grayscale;
+	-webkit-font-smoothing: antialiased;
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+
+
+.wrapper {
+	position: relative;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+	width: 100%;
+	min-width: 680px;
+	padding: 50px;
+}
+.axis {
+	display: block;
+	position: relative;
+	width: 100%;
+	height: 540px;
+}
+.axis::before {
+	content: "";
+	position: absolute;
+	left: -50px;
+	top: 0;
+	width: 50px;
+	height: 100%;
+}
+.axis::after {
+	content: "";
+	position: absolute;
+	right: -50px;
+	top: 0;
+	width: 50px;
+	height: 100%;
+}
+.progressions {
+	position: absolute;
+	left: 5px;
+	top: 135px;
+	text-align: left;
+}
+.progression,
+.progression-segments {
+	margin-bottom: 4px;
+	cursor: pointer;
+	-webkit-transition: color .1s;
+	transition: color .1s;
+}
+.rounded {
+	position: absolute;
+	left: 5px;
+	top: 283px;
+	text-align: left;
+	cursor: pointer;
+	-webkit-transition: color .1s;
+	transition: color .1s;
+}
+.sets {
+	position: absolute;
+	right: 5px;
+	top: 135px;
+	text-align: right;
+	white-space: nowrap;
+}
+.sets-save {
+	position: relative;
+	display: block;
+	text-align: right;
+	padding-right: 16px;
+	cursor: pointer;
+	-webkit-transition: color .1s;
+	transition: color .1s;
+}
+.sets-save::before {
+	content: "";
+	position: absolute;
+	right: 2px;
+	top: 5px;
+	width: 8px;
+	height: 2px;
+	-webkit-transition: background .1s;
+	transition: background .1s;
+}
+.sets-save::after {
+	content: "";
+	position: absolute;
+	right: 5px;
+	top: 2px;
+	width: 2px;
+	height: 8px;
+	-webkit-transition: background .1s;
+	transition: background .1s;
+}
+.sets-save-hidden {
+	display: none;
+}
+.set {
+	position: relative;
+	margin-bottom: 4px;
+	-webkit-transition: color .1s;
+	transition: color .1s;
+}
+.set-name {
+	position: relative;
+	display: inline-block;
+	vertical-align: top;
+	margin-right: 4px;
+	cursor: pointer;
+}
+.set-active .set-name {
+	cursor: default;
+}
+.set-remove {
+	position: relative;
+	display: inline-block;
+	vertical-align: top;
+	width: 12px;
+	height: 12px;
+	-webkit-transform: translateX(-0.5px);
+	transform: translateX(-0.5px);
+	cursor: pointer;
+}
+.set-remove::before {
+	content: "";
+	position: absolute;
+	left: 2px;
+	top: 5px;
+	width: 9px;
+	height: 2px;
+	-webkit-transform: rotate(45deg);
+	transform: rotate(45deg);
+	-webkit-transition: background .1s;
+	transition: background .1s;
+}
+.set-remove::after {
+	content: "";
+	position: absolute;
+	left: 2px;
+	top: 5px;
+	width: 9px;
+	height: 2px;
+	-webkit-transform: rotate(-45deg);
+	transform: rotate(-45deg);
+	-webkit-transition: background .1s;
+	transition: background .1s;
+}
+.set-remove-label {
+	display: none;
+	position: absolute;
+	left: 16px;
+}
+.set-remove:hover .set-remove-label {
+	display: block;
+}
+.weight {
+	z-index: 2;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-flex-direction: column;
+	flex-direction: column;
+	-webkit-justify-content: start;
+	justify-content: start;
+	-webkit-align-items: center;
+	align-items: center;
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 0;
+	height: 100%;
+	text-align: center;
+}
+.weight-section-one {
+	display: -webkit-flex;
+	display: flex;
+	-webkit-flex-direction: column;
+	flex-direction: column;
+	-webkit-justify-content: start;
+	justify-content: start;
+	-webkit-align-items: center;
+	align-items: center;
+	position: relative;
+	width: 50px;
+	background: white;
+}
+.weight-section-one::after {
+	content: "";
+	z-index: -1;
+	position: absolute;
+	left: 0;
+	top: 100%;
+	width: 100%;
+	height: 16px;
+	background: white;
+}
+.weight-section-two {
+	display: -webkit-flex;
+	display: flex;
+	-webkit-flex-direction: column;
+	flex-direction: column;
+	-webkit-justify-content: start;
+	justify-content: start;
+	-webkit-align-items: center;
+	align-items: center;
+	position: relative;
+	width: 50px;
+	background: white;
+}
+.weight-section-two::after {
+	content: "";
+	z-index: -1;
+	position: absolute;
+	left: 0;
+	top: -16px;
+	width: 100%;
+	height: 16px;
+	background: white;
+}
+.weight-name {
+	position: relative;
+	margin-bottom: 22px;
+	cursor: default;
+	font-weight: bold;
+	white-space: nowrap;
+	background: white;
+}
+.weight-master {
+	position: relative;
+	margin-bottom: 22px;
+	cursor: pointer;
+	-webkit-transition: color .1s;
+	transition: color .1s;
+}
+.weight-master::after {
+	content: "Instance";
+	position: relative;
+	white-space: nowrap;
+}
+.weight label {
+	display: block;
+	position: relative;
+	margin-bottom: 8px;
+	text-align: center;
+	opacity: 1;
+	-webkit-transition: color .1s, opacity .1s;
+	transition: color .1s, opacity .1s;
+}
+.weight label.weight-stemsidebearing-hidden {
+	opacity: .25;
+	cursor: default;
+	pointer-events: none;
+}
+.weight label.weight-stemsidebearing-hidden.weight-stemlabel-warning {
+	opacity: 1;
+}
+.weight input {
+	display: block;
+	position: relative;
+	width: 50px;
+	margin-bottom: -2px;
+	padding: 2px 0;
+	font-family: inherit;
+	font-size: inherit;
+	line-height: inherit;
+	text-align: center;
+	color: inherit;
+	background: white;
+	-webkit-transition: color .1s;
+	transition: color .1s;
+	-moz-appearance: none;
+	appearance: none;
+	-webkit-box-shadow: none;
+	box-shadow: none;
+	border-radius: 4px;
+	border: none;
+	outline: none;
+	text-decoration: none;
+	-moz-user-select: text;
+	-webkit-user-select: text;
+	-ms-user-select: text;
+	user-select: text;
+	-webkit-transition: background .1s;
+	transition: background .1s;
+}
+.weight input::placeholder {
+	opacity: 1;
+	font-family: inherit;
+	font-size: inherit;
+	line-height: inherit;
+	color: inherit;
+	background: transparent;
+}
+.weight-controls {
+	-webkit-flex: 1;
+	flex: 1;
+	position: relative;
+	width: 20px;
+	cursor: col-resize;
+}
+.weight-line {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+}
+.weight-line::after {
+	content: "";
+	position: absolute;
+	left: 50%;
+	top: 0;
+	width: 2px;
+	height: 100%;
+	margin-left: -1px;
+}
+.weight-graph {
+	position: absolute;
+	left: 50%;
+	bottom: 50%;
+	width: 0;
+	height: 8%;
+	pointer-events: none;
+}
+/* draw a graph with a diagonal line that will retain its width when scaled */
+.weight-graph::after {
+	content: "";
+	position: absolute;
+	left: 0;
+	top: -50%;
+	width: 100%;
+	height: 200%;
+	background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' preserveAspectRatio='none' viewBox='0 0 100 100'><line x1='0' y1='75' x2='100' y2='25' stroke-width='1' stroke='rgb(42,144,118)' vector-effect='non-scaling-stroke'/></svg>");
+	background-repeat: no-repeat;
+	background-position: center center;
+	background-size: 100% 100%, auto;
+}
+/* change the color for graph between masters */
+.master:has(+ .master) .weight-graph::after {
+	background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' preserveAspectRatio='none' viewBox='0 0 100 100'><line x1='0' y1='75' x2='100' y2='25' stroke-width='1' stroke='black' vector-effect='non-scaling-stroke'/></svg>");
+
+/* change the color for graph between adjusted instances */}
+.adjusted:has(+ .adjusted) .weight-graph::after {
+	background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' preserveAspectRatio='none' viewBox='0 0 100 100'><line x1='0' y1='75' x2='100' y2='25' stroke-width='1' stroke='rgb(55,120,174)' vector-effect='non-scaling-stroke'/></svg>");
+}
+.weight-graph-hidden {
+	display: none;
+}
+.weight:last-of-type .weight-graph {
+	display: none;
+}
+.weight-handler {
+	z-index: 1;
+	position: absolute;
+	left: 50%;
+	bottom: 50%;
+	width: 8px;
+	height: 8px;
+	margin-left: -4px;
+	margin-bottom: -4px;
+	border-radius: 50%;
+	pointer-events: none;
+}
+.weight-position-minus {
+	z-index: 1;
+	position: absolute;
+	right: 10px;
+	top: 0;
+	width: 24px;
+	height: 16px;
+	cursor: pointer;
+}
+.weight-position-plus {
+	z-index: 1;
+	position: absolute;
+	left: 10px;
+	top: 0;
+	width: 24px;
+	height: 16px;
+	cursor: pointer;
+}
+.weight-position-minus::before {
+	content: "";
+	position: absolute;
+	left: 6px;
+	top: 4px;
+	width: 10px;
+	height: 2px;
+}
+.weight-position-plus::before {
+	content: "";
+	position: absolute;
+	right: 6px;
+	top: 4px;
+	width: 10px;
+	height: 2px;
+}
+.weight-position-plus::after {
+	content: "";
+	position: absolute;
+	right: 10px;
+	top: 0;
+	width: 2px;
+	height: 10px;
+}
+.weight-stem-minus {
+	z-index: 1;
+	position: absolute;
+	right: 10px;
+	bottom: 0;
+	width: 24px;
+	height: 16px;
+	cursor: pointer;
+}
+.weight-stem-plus {
+	z-index: 1;
+	position: absolute;
+	left: 10px;
+	bottom: 0;
+	width: 24px;
+	height: 16px;
+	cursor: pointer;
+}
+.weight-stem-minus::before {
+	content: "";
+	position: absolute;
+	left: 6px;
+	bottom: 4px;
+	width: 10px;
+	height: 2px;
+}
+.weight-stem-plus::before {
+	content: "";
+	position: absolute;
+	right: 6px;
+	bottom: 4px;
+	width: 10px;
+	height: 2px;
+}
+.weight-stem-plus::after {
+	content: "";
+	position: absolute;
+	right: 10px;
+	bottom: 0;
+	width: 2px;
+	height: 10px;
+}
+.weight-stem-minusplus-hide {
+	display: none;
+}
+.weight-section-two label:first-of-type {
+	position: relative;
+	margin-top: 8px;
+}
+.weight-hide {
+	position: relative;
+	margin-top: 14px;
+	cursor: pointer;
+	-webkit-transition: color .1s;
+	transition: color .1s;
+}
+.weight-hide::after {
+	content: "Hide";
+	position: relative;
+}
+.visualization {
+	display: -webkit-flex;
+	display: flex;
+	-webkit-flex-direction: column;
+	flex-direction: column;
+	-webkit-justify-content: center;
+	justify-content: center;
+	-webkit-align-items: center;
+	align-items: center;
+	position: relative;
+	margin-top: 22px;
+	width: 50px;
+	height: 140px;
+}
+.visualization::before {
+	content: "";
+	position: absolute;
+	left: 0;
+	top: -24px;
+	width: 50px;
+	height: 24px;
+	background: white;
+}
+.visualization-stem {
+	position: absolute;
+	left: auto;
+	top: 0;
+	width: 10%;
+	height: 100%;
+	opacity: 1;
+	-webkit-transition: opacity .1s;
+	transition: opacity .1s;
+}
+.visualization-stem::before {
+	content: "";
+	position: absolute;
+	left: -1px;
+	top: 0;
+	width: 1px;
+	height: 100%;
+	background: white;
+}
+.visualization-stem::after {
+	content: "";
+	position: absolute;
+	left: 100%;
+	top: 0;
+	width: 1px;
+	height: 100%;
+	background: white;
+}
+.visualization-sidebearing {
+	position: absolute;
+	left: auto;
+	top: 0;
+	width: 70%;
+	height: 100%;
+	opacity: 1;
+	-webkit-transition: opacity .1s;
+	transition: opacity .1s;
+}
+.visualization-sidebearing::before {
+	content: "";
+	position: absolute;
+	left: -1px;
+	top: 0;
+	width: 1px;
+	height: 100%;
+}
+.visualization-sidebearing::after {
+	content: "";
+	position: absolute;
+	right: -1px;
+	top: 0;
+	width: 1px;
+	height: 100%;
+}
+.visualization-hide {
+	opacity: 0;
+}
+
+
+
+/* highlight selected weight */
+.highlight {
+	z-index: 3;
+}
+/* a trick to hide a graph line behind the next handler */
+.highlight .weight-graph::after {
+	mix-blend-mode: darken;
+}
+
+
+
+/* colors */
+/* don't forget to also change the colors (above) for all three color versions of .weight-graph::after */
+.progressions,
+.rounded,
+.sets {
+	color: #bbbbbb;
+}
+.sets-save::before,
+.sets-save::after,
+.set-remove::before,
+.set-remove::after {
+	background: #bbbbbb;
+}
+
+/* master (and hover) color */
+.progression:hover,
+.progression-segments:hover,
+.progression-active,
+.rounded:hover,
+.rounded-active,
+.set-name:hover,
+.set-active .set-name,
+.sets-save:hover,
+.set-remove-label,
+.master,
+.weight-master:hover,
+.weight-hide:hover {
+	color: black;
+}
+.sets-save:hover::before,
+.sets-save:hover::after,
+.set-remove:hover::before,
+.set-remove:hover::after,
+.weight-position-minus:hover::before,
+.weight-position-plus:hover::before,
+.weight-position-plus:hover::after,
+.weight-stem-minus:hover::before,
+.weight-stem-plus:hover::before,
+.weight-stem-plus:hover::after,
+.adjusted .weight-position-minus:hover::before,
+.adjusted .weight-position-plus:hover::before,
+.adjusted .weight-position-plus:hover::after,
+.adjusted .weight-stem-minus:hover::before,
+.adjusted .weight-stem-plus:hover::before,
+.adjusted .weight-stem-plus:hover::after,
+.master .weight-position-minus::before,
+.master .weight-position-plus::before,
+.master .weight-position-plus::after,
+.master .weight-stem-minus::before,
+.master .weight-stem-plus::before,
+.master .weight-stem-plus::after,
+.master .weight-line::after,
+.master .weight-handler,
+.master .visualization-sidebearing::before,
+.master .visualization-sidebearing::after,
+.master .visualization-stem {
+	background: black;
+}
+.master input:enabled:hover,
+.master input:focus {
+	background: #f3f3f3;
+}
+.master .weight-stem-minus,
+.master .weight-stem-plus {
+	display: none;
+}
+.master .weight-master::after {
+	content: "Master";
+}
+
+/* instance color */
+.instance {
+	color: #2a9076;
+}
+.weight-line::after,
+.weight-handler,
+.weight-position-minus::before,
+.weight-position-plus::before,
+.weight-position-plus::after,
+.weight-stem-minus::before,
+.weight-stem-plus::before,
+.weight-stem-plus::after,
+.visualization-sidebearing::before,
+.visualization-sidebearing::after,
+.visualization-stem {
+	background: #2a9076;
+}
+.instance input::selection {
+	background: #bce6db;
+}
+.instance input:enabled:hover,
+.instance input:focus {
+	background: #ebf8f5;
+}
+
+/* adjusted instance color */
+.adjusted {
+	color: #3778ae;
+}
+.adjusted .weight-line::after,
+.adjusted .weight-handler,
+.adjusted .weight-position-minus::before,
+.adjusted .weight-position-plus::before,
+.adjusted .weight-position-plus::after,
+.adjusted .weight-stem-minus::before,
+.adjusted .weight-stem-plus::before,
+.adjusted .weight-stem-plus::after,
+.adjusted .visualization-sidebearing::before,
+.adjusted .visualization-sidebearing::after,
+.adjusted .visualization-stem {
+	background: #3778ae;
+}
+.adjusted input::selection {
+	background: #b4d2ea;
+}
+.adjusted input:enabled:hover,
+.adjusted input:focus {
+	background: #eef6fd;
+}
+
+/* hidden weight color */
+.hidden {
+	z-index: 0;
+	top: -30px;
+	height: calc(100% + 60px);
+	color: #dddddd;
+}
+.hidden .weight-section-one::after,
+.hidden label,
+.hidden .weight-graph,
+.hidden .weight-handler,
+.hidden .weight-position-minus,
+.hidden .weight-position-plus,
+.hidden .weight-stem-minus,
+.hidden .weight-stem-plus,
+.hidden .weight-master,
+.hidden .visualization {
+	display: none;
+}
+.hidden .weight-name {
+	margin-bottom: 18px;
+}
+.hidden .weight-controls {
+	margin-bottom: 0;
+	pointer-events: none;
+}
+.hidden .weight-line::after {
+	background: #f3f3f3;
+}
+.hidden .weight-hide {
+	margin-top: 18px;
+	-webkit-transition: none;
+	transition: none;
+}
+.hidden .weight-hide:hover {
+	color: inherit;
+}
+.hidden .weight-hide::after {
+	content: "Unhide";
+}
+
+/* warning color */
+.weight-master-warning,
+.weight-stem.weight-stem-warning,
+.weight-stemlabel-warning {
+	color: #dd292f;
+}
+
+
+
+/* limit axis size on big screen and give it more space */
+@media (min-width: 1400px) and (min-height: 640px) {
+	.wrapper {
+		display: -webkit-flex;
+		display: flex;
+		-webkit-justify-content: center;
+		justify-content: center;
+		-webkit-align-items: center;
+		align-items: center;
+		height: 100%;
+	}
+}
+@media (min-width: 1400px) {
+	.axis {
+		width: 1300px;
+		margin: 0 auto 0 auto;
+	}
+}
+@media (min-width: 1660px) {
+	.progressions,
+	.rounded {
+		left: -10%;
+	}
+	.sets {
+		right: -10%;
+	}
+}

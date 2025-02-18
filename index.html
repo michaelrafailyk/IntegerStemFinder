@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>IntegerStemFinder</title>
+	<link rel="stylesheet" href="integerstemfinder.css">
+
+</head>
+<body>
+
+	<div class="wrapper">
+		<div class="axis">
+			<div class="progressions">
+				<div class="progression-segments">Segments</div>
+				<div class="progression" data="equal">Equal</div>
+				<div class="progression" data="impallari">Impallari</div>
+				<div class="progression" data="schneider">Schneider</div>
+				<div class="progression" data="lucas">Luc(as)</div>
+				<div class="progression" data="abraham">Abraham</div>
+			</div>
+			<div class="rounded">Rounded</div>
+			<div class="sets">
+				<div class="sets-list"></div>
+				<div class="sets-save">Save set</div>
+			</div>
+			<div class="weight instance">
+				<div class="weight-section-one">
+					<div class="weight-name"></div>
+					<div class="weight-master"></div>
+					<label>
+						<div>Position</div>
+						<input class="weight-position" type="text" inputmode="numeric" pattern="\d*" value="">
+					</label>
+				</div>
+				<div class="weight-controls">
+					<div class="weight-line"></div>
+					<div class="weight-graph"></div>
+					<div class="weight-handler"></div>
+					<div class="weight-position-minus"></div>
+					<div class="weight-position-plus"></div>
+					<div class="weight-stem-minus weight-stem-minusplus-hide"></div>
+					<div class="weight-stem-plus weight-stem-minusplus-hide"></div>
+				</div>
+				<div class="weight-section-two">
+					<label>
+						<div>Stem</div>
+						<input class="weight-stem" type="text" inputmode="numeric" pattern="\d*" value="" placeholder="–">
+					</label>
+					<label>
+						<div>Side<br>Bearing</div>
+						<input class="weight-sidebearing" type="text" inputmode="numeric" pattern="\d*" value="" placeholder="–">
+					</label>
+					<div class="weight-hide"></div>
+				</div>
+				<div class="visualization">
+					<div class="visualization-sidebearing"></div>
+					<div class="visualization-stem"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script src="integerstemfinder.js"></script>
+
+</body>
+</html>
