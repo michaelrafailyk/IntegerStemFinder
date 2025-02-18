@@ -8,8 +8,6 @@ Online version: [michaelrafailyk.github.io/IntegerStemFinder](https://michaelraf
 
 Video demonstration: [youtube.com/watch?v=yZbrtoCHoXE](https://www.youtube.com/watch?v=yZbrtoCHoXE)
 
----
-
 ![IntegerStemFinder preview](https://repository-images.githubusercontent.com/934969198/5a471259-8686-4439-8f21-5781f67df29c)
 
 ## Features
@@ -37,3 +35,18 @@ Video demonstration: [youtube.com/watch?v=yZbrtoCHoXE](https://www.youtube.com/w
 - Switch from accurate (two decimal places) to rounded stems and sidebearings by clicking the `Rounded` button.
 - See a visualization of the stem thickness with a sidebearings around it, under the weight.
 - Predefine default weights and its parameters in an array in a JavaScript file. Here you can set default axis configuration, such as: amount of weights on axis; weight position and name; weight is master, instance, or hidden; stem and sidebearing values for masters.
+
+``` js
+defaults: [
+	{position: 0, name: 'Hairline', hidden: true},
+	{position: 100, name: 'Thin', master: true, stem: 20, sidebearing: 82},
+	{position: 200, name: 'Extra Light'},
+	{position: 300, name: 'Light'},
+	{position: 400, name: 'Regular'},
+	{position: 500, name: 'Medium'},
+	{position: 600, name: 'Semi Bold'},
+	{position: 700, name: 'Bold'},
+	{position: 800, name: 'Extra Bold'},
+	{position: 900, name: 'Black', master: true, stem: 220, sidebearing: 50}
+]
+```
