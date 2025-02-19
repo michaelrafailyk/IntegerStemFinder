@@ -1,6 +1,6 @@
 ## IntegerStemFinder
 
-A tool for planning weight interpolation and finding the closest integer (or closest to integer) stem or sidebearing.
+A tool for planning weight interpolation and finding the closest integer stem or sidebearing.
 
 It is a stem interpolation calculator with the ability to adjust instances after interpolation and to easily find the closest integer (or closest to integer if decimal) stem or sidebearing. Features: interpolate and extrapolate; switch any weight to master; hide any weight from axis; drag the weight to change its position; adjust instance after interpolation; find a closest integer stem or sidebearing; switch between accurate and rounded values; see a visualization of stems and sidebearings; compare interpolation strategies using sets.
 
