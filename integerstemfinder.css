@@ -32,7 +32,7 @@ body {
 	-webkit-box-sizing: border-box;
 	box-sizing: border-box;
 	width: 100%;
-	min-width: 680px;
+	min-width: 960px;
 	padding: 50px;
 }
 .axis {
@@ -57,11 +57,20 @@ body {
 	width: 50px;
 	height: 100%;
 }
+.axis-line {
+	position: absolute;
+	left: 0;
+	top: 181px;
+	width: 100%;
+	height: 2px;
+}
 .progressions {
 	position: absolute;
-	left: 5px;
+	left: 0;
 	top: 135px;
+	padding: 0 5px;
 	text-align: left;
+	background: white;
 }
 .progression,
 .progression-segments {
@@ -81,10 +90,12 @@ body {
 }
 .sets {
 	position: absolute;
-	right: 5px;
+	right: 0;
 	top: 135px;
+	padding: 0 5px;
 	text-align: right;
 	white-space: nowrap;
+	background: white;
 }
 .sets-save {
 	position: relative;
@@ -336,51 +347,16 @@ body {
 	height: 100%;
 	margin-left: -1px;
 }
-.weight-graph {
-	position: absolute;
-	left: 50%;
-	bottom: 50%;
-	width: 0;
-	height: 8%;
-	pointer-events: none;
-}
-/* draw a graph with a diagonal line that will retain its width when scaled */
-.weight-graph::after {
-	content: "";
-	position: absolute;
-	left: 0;
-	top: -50%;
-	width: 100%;
-	height: 200%;
-	background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' preserveAspectRatio='none' viewBox='0 0 100 100'><line x1='0' y1='75' x2='100' y2='25' stroke-width='1' stroke='rgb(42,144,118)' vector-effect='non-scaling-stroke'/></svg>");
-	background-repeat: no-repeat;
-	background-position: center center;
-	background-size: 100% 100%, auto;
-}
-/* change the color for graph between masters */
-.master:has(+ .master) .weight-graph::after {
-	background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' preserveAspectRatio='none' viewBox='0 0 100 100'><line x1='0' y1='75' x2='100' y2='25' stroke-width='1' stroke='black' vector-effect='non-scaling-stroke'/></svg>");
-
-/* change the color for graph between adjusted instances */}
-.adjusted:has(+ .adjusted) .weight-graph::after {
-	background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' preserveAspectRatio='none' viewBox='0 0 100 100'><line x1='0' y1='75' x2='100' y2='25' stroke-width='1' stroke='rgb(55,120,174)' vector-effect='non-scaling-stroke'/></svg>");
-}
-.weight-graph-hidden {
-	display: none;
-}
-.weight:last-of-type .weight-graph {
-	display: none;
-}
 .weight-handler {
-	z-index: 1;
 	position: absolute;
 	left: 50%;
-	bottom: 50%;
+	top: 50%;
 	width: 8px;
 	height: 8px;
-	margin-left: -4px;
-	margin-bottom: -4px;
+	margin-left: -6px;
+	margin-top: -6px;
 	border-radius: 50%;
+	border: 2px solid white;
 	pointer-events: none;
 }
 .weight-position-minus {
@@ -572,15 +548,10 @@ body {
 .highlight {
 	z-index: 3;
 }
-/* a trick to hide a graph line behind the next handler */
-.highlight .weight-graph::after {
-	mix-blend-mode: darken;
-}
 
 
 
 /* colors */
-/* don't forget to also change the colors (above) for all three color versions of .weight-graph::after */
 .progressions,
 .rounded,
 .sets {
@@ -708,7 +679,6 @@ body {
 }
 .hidden .weight-section-one::after,
 .hidden label,
-.hidden .weight-graph,
 .hidden .weight-handler,
 .hidden .weight-position-minus,
 .hidden .weight-position-plus,
@@ -725,8 +695,19 @@ body {
 	margin-bottom: 0;
 	pointer-events: none;
 }
+.axis-line,
 .hidden .weight-line::after {
 	background: #f3f3f3;
+}
+.hidden .weight-line::before {
+	content: "";
+	position: absolute;
+	left: 50%;
+	top: 0;
+	width: 6px;
+	height: 100%;
+	margin-left: -3px;
+	background: white;
 }
 .hidden .weight-hide {
 	margin-top: 18px;
@@ -768,11 +749,15 @@ body {
 	}
 }
 @media (min-width: 1660px) {
-	.progressions,
+	.progressions {
+		left: -10%;
+		padding: 0;
+	}
 	.rounded {
 		left: -10%;
 	}
 	.sets {
 		right: -10%;
+		padding: 0;
 	}
 }

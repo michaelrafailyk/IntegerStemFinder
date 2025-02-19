@@ -1,6 +1,6 @@
 /*
 
-	IntegerStemFinder v1.0.1
+	IntegerStemFinder v1.0.2
 	Licensed under the MIT License
 	Developed by Michael Rafailyk in 2025
 	https://github.com/michaelrafailyk/IntegerStemFinder
@@ -63,15 +63,9 @@ let axis = {
 			let position = axis.weights.all[i].querySelector('.weight-position');
 			let stem = axis.weights.all[i].querySelector('.weight-stem');
 			let sidebearing = axis.weights.all[i].querySelector('.weight-sidebearing');
-			let graph = axis.weights.all[i].querySelector('.weight-graph');
-			let handler = axis.weights.all[i].querySelector('.weight-handler');
-			let handler_position = 10 + (8 * (axis.weights.defaults[i].position / 100)) + '%';
 			name.textContent = axis.weights.defaults[i].name;
 			axis.weights.all[i].style.left = axis.weights.defaults[i].position / 10 + '%';
 			position.value = axis.weights.defaults[i].position;
-			graph.style.bottom = handler_position;
-			graph.style.height = 8 + '%';
-			handler.style.bottom = handler_position;
 			if (axis.weights.defaults[i].master && axis.weights.defaults[i].stem) {
 				stem.value = axis.weights.defaults[i].stem;
 			}
@@ -526,7 +520,6 @@ let axis = {
 					}
 					highlight();
 				}
-				axis.graph();
 				axis.visualization();
 			});
 			// set hidden weights specified in defaults
@@ -535,11 +528,6 @@ let axis = {
 			}
 			
 		// weights loop end
-		}
-		
-		// draw the graph if there are less than two masters on axis
-		if (axis.weights.masters.length < 2) {
-			axis.graph();
 		}
 		
 		// check input text in a fields
@@ -1023,7 +1011,6 @@ let axis = {
 			}
 		}
 		
-		axis.graph();
 		axis.visualization();
 		axis.sets.highlight();
 		
@@ -1101,7 +1088,6 @@ let axis = {
 		}
 		
 		// update visualizations
-		axis.graph();
 		axis.visualization();
 		axis.sets.highlight();
 		
@@ -1389,7 +1375,6 @@ let axis = {
 				}
 			}
 			// update visualizations
-			axis.graph();
 			axis.visualization();
 		}
 		// do nothing if new position (for set main attribute) is out of range (of bumpers or axis)
@@ -1401,36 +1386,6 @@ let axis = {
 		}
 		
 	// integerfinder end
-	},
-
-
-
-	graph: function() {
-		// update diagonal lines between weights handlers
-		for (let i = 0; i < axis.weights.visible.length; i++) {
-			let graph_element = axis.weights.visible[i].querySelector('.weight-graph');
-			if (axis.weights.visible[i + 1]) {
-				let graph_element_next = axis.weights.visible[i + 1].querySelector('.weight-graph');
-				let weight_position = axis.weights.visible[i].getBoundingClientRect().left;
-				let weight_position_next = axis.weights.visible[i + 1].getBoundingClientRect().left;
-				let graph_width = weight_position_next - weight_position;
-				let graph_bottom = Number(graph_element.style.bottom.replace('%', ''));
-				let graph_bottom_next = Number(graph_element_next.style.bottom.replace('%', ''));
-				let graph_height = Number(graph_element.style.height.replace('%', ''));
-				let graph_height_new = graph_bottom_next - graph_bottom;
-				graph_element.style.width = graph_width + 'px';
-				if (graph_height_new !== graph_height && graph_height_new >= 8) {
-					graph_element.style.height = graph_height_new + '%';
-				}
-				if (graph_element.classList.contains('weight-graph-hidden')) {
-					graph_element.classList.remove('weight-graph-hidden');
-				}
-			} else {
-				if (!graph_element.classList.contains('weight-graph-hidden')) {
-					graph_element.classList.add('weight-graph-hidden');
-				}
-			}
-		}
 	},
 
 
@@ -1776,7 +1731,6 @@ let axis = {
 			}
 			axis.onlyextrememasters();
 			// update visualization
-			axis.graph();
 			axis.visualization();
 			axis.sets.highlight();
 		},
@@ -2178,7 +2132,6 @@ let axis = {
 			// update general params and visualization
 			axis.routing();
 			axis.onlyextrememasters();
-			axis.graph();
 			axis.visualization();
 			// highlight the progression button
 			if (axis.sets.list[index].progression) {
@@ -2229,18 +2182,3 @@ let axis = {
 
 };
 axis.setup();
-
-// horizontal resize of window
-let window_width_one = document.documentElement.clientWidth;
-window.addEventListener('resize', function() {
-	let window_width_two = document.documentElement.clientWidth;
-	if (window_width_two !== window_width_one) {
-		window_width_one = window_width_two;
-		setTimeout(function() {
-			if (window_width_two == document.documentElement.clientWidth) {
-				// end of resize event – the following code will run just once
-				axis.graph();
-			}
-		}, 40);
-	}
-});
