@@ -56,3 +56,16 @@ defaults: [
 	{position: 900, name: 'Black', master: true, stem: 220, sidebearing: 50}
 ]
 ```
+
+## Colors
+
+- Black – master
+- Green – instance
+- Glue – adjusted instance
+- Gray – hidden weight
+
+## Updates
+
+#### 1.0.2.
+
+Graph with diagonal lines between weights (still can be seen on a promo) are removed now, to avoid the confusion between user coordinates (that was) and stem curvature (doesn't). Instead, the axis line in gray color has been added.
