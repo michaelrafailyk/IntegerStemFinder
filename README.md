@@ -27,7 +27,7 @@ Video demonstration: [youtube.com/watch?v=yZbrtoCHoXE](https://www.youtube.com/w
 
 - Adjust the instance position after interpolation. Interpolated instances are green, and adjusted instances are blue.
 - Switch any weight to master or instance by clicking the `Master`/`Instance` button.
-- Hide any weight from axis by clicking the `Hide` button. This way you can control number of weights on the axis. Hidden weights do not participate in interpolation.
+- Hide any weight from axis by clicking the `Hide` button. This way you can control number of weights on the axis. Hidden weights do not participate in interpolation. Hidden weights are gray.
 
 - Move the weight position by entering the value into the `position field`.
 - Move the weight position one division forward/back by clicking `+`/`-` buttons under the position field.
