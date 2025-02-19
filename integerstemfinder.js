@@ -1,6 +1,6 @@
 /*
 
-	IntegerStemFinder v1.0
+	IntegerStemFinder v1.0.1
 	Licensed under the MIT License
 	Developed by Michael Rafailyk in 2025
 	https://github.com/michaelrafailyk/IntegerStemFinder
@@ -1949,7 +1949,7 @@ let axis = {
 
 
 	sets: {
-		// sets are imprints of axis state
+		// saving set you save an imprints of axis state
 		// count of sets is limited by count of its labels
 		
 		labels: ['Alpha', 'Beta', 'Gamma', 'Delta', 'Epsilon', 'Zeta'],
@@ -2005,6 +2005,11 @@ let axis = {
 					set.progression = p + 1;
 					break;
 				}
+			}
+			if (axis.weights.rounded) {
+				set.rounded = true;
+			} else {
+				set.rounded = false;
 			}
 			return set;
 		},
@@ -2072,6 +2077,11 @@ let axis = {
 		},
 		
 		restoreset: function(index) {
+			// highlight or unhighlight rounded button
+			let rounded = document.querySelector('.rounded');
+			if ((axis.sets.list[index].rounded && !axis.weights.rounded) || (!axis.sets.list[index].rounded && axis.weights.rounded)) {
+				rounded.click();
+			}
 			// restore every value of every weight from set
 			for (let i = 0; i < axis.sets.list[index].weights.length; i++) {
 				let data = axis.sets.list[index].weights[i];
