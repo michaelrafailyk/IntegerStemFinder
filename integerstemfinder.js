@@ -14,7 +14,7 @@ let axis = {
 	weights: {
 		defaults: [
 			{position: 0, name: 'Hairline', hidden: true},
-			{position: 100, name: 'Thin', master: true},
+			{position: 100, name: 'Thin', master: true, stem: 20},
 			{position: 200, name: 'Extra Light'},
 			{position: 300, name: 'Light'},
 			{position: 400, name: 'Regular'},
@@ -22,7 +22,7 @@ let axis = {
 			{position: 600, name: 'Semi Bold'},
 			{position: 700, name: 'Bold'},
 			{position: 800, name: 'Extra Bold'},
-			{position: 900, name: 'Black', master: true}
+			{position: 900, name: 'Black', master: true, stem: 220}
 		],
 		all: [],
 		visible: [],
