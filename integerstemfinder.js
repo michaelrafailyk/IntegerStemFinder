@@ -2139,8 +2139,12 @@ let axis = {
 				let stem_value = data.stem;
 				let sidebearing_value = data.sidebearing;
 				if (axis.weights.rounded) {
-					stem_value = Math.round(stem_value);
-					sidebearing_value = Math.round(sidebearing_value);
+					if (stem_value.length) {
+						stem_value = Math.round(stem_value);
+					}
+					if (sidebearing_value.length) {
+						sidebearing_value = Math.round(sidebearing_value);
+					}
 				}
 				weight.style.left = data.percent + '%';
 				weight_position.value = data.position;
