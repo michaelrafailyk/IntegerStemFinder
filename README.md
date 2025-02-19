@@ -8,6 +8,8 @@ The progression formulas are taken from a [comment of Linus Romer](https://typed
 
 Online version: [michaelrafailyk.github.io/IntegerStemFinder](https://michaelrafailyk.github.io/IntegerStemFinder/)
 
+Download for offline use: [github.com/michaelrafailyk/IntegerStemFinder/archive/refs/heads/main.zip](https://github.com/michaelrafailyk/IntegerStemFinder/archive/refs/heads/main.zip)
+
 Video demonstration: [youtube.com/watch?v=yZbrtoCHoXE](https://www.youtube.com/watch?v=yZbrtoCHoXE)
 
 ## Preview
