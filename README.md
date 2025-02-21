@@ -61,7 +61,7 @@ defaults: [
 
 - Black – master
 - Green – instance
-- Glue – adjusted instance
+- Blue – adjusted instance
 - Gray – hidden weight
 
 ## Updates
