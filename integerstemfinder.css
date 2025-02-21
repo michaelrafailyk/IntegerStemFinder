@@ -39,7 +39,7 @@ body {
 	display: block;
 	position: relative;
 	width: 100%;
-	height: 540px;
+	height: 520px;
 }
 .axis::before {
 	content: "";
@@ -60,7 +60,7 @@ body {
 .progressions {
 	position: absolute;
 	left: 5px;
-	top: 135px;
+	top: 125px;
 	text-align: left;
 }
 .progression,
@@ -73,7 +73,7 @@ body {
 .rounded {
 	position: absolute;
 	left: 5px;
-	top: 283px;
+	top: 273px;
 	text-align: left;
 	cursor: pointer;
 	-webkit-transition: color .1s;
@@ -82,7 +82,7 @@ body {
 .sets {
 	position: absolute;
 	right: 5px;
-	top: 135px;
+	top: 125px;
 	text-align: right;
 	white-space: nowrap;
 }
