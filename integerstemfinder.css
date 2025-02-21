@@ -73,7 +73,7 @@ body {
 .rounded {
 	position: absolute;
 	left: 5px;
-	top: 273px;
+	top: 263px;
 	text-align: left;
 	cursor: pointer;
 	-webkit-transition: color .1s;
