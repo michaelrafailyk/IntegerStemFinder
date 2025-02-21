@@ -14,7 +14,7 @@ Video demonstration: [youtube.com/watch?v=ed7xml-1rKA](https://www.youtube.com/w
 
 ## Preview
 
-![IntegerStemFinder preview](https://repository-images.githubusercontent.com/934969198/9f134902-2213-46a1-b999-c25c95f52540)
+![IntegerStemFinder preview](https://repository-images.githubusercontent.com/934969198/3612982b-854b-4ab1-a933-35c2a4a906f2)
 
 ## Features
 
