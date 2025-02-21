@@ -1522,8 +1522,7 @@ let axis = {
 					}
 				}
 				
-				// looking for a way to visualize stem thickness curve
-				// it is a bit complicated to draw when steps are not equal
+				// // looking for a way to visualize stem thickness curve, temporarily disabled
 				// let handler = axis.weights.visible[i].querySelector('.weight-handler');
 				// if (stem_value.length) {
 				// 	if (handler.classList.contains('weight-handler-hidden')) {

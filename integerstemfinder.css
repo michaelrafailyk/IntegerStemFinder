@@ -345,7 +345,6 @@ body {
 	pointer-events: none;
 }
 .weight-handler {
-	display: none;
 	position: absolute;
 	left: 50%;
 	bottom: 50%;
