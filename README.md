@@ -66,6 +66,6 @@ defaults: [
 
 ## Updates
 
-#### 1.0.2.
+#### 1.0.3
 
-Graph with diagonal lines between weights (still can be seen on a promo) are removed now, to avoid the confusion between user coordinates (that was) and stem curvature (wasn't). Instead, the axis line in gray color has been added.
+Graph with diagonal lines between weights (still can be seen on a promo) are removed now, to avoid the confusion between user coordinates (that was) and stem curvature (wasn't). An updated functionality with a stem curve could be added later.

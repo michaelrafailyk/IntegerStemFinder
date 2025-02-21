@@ -1,6 +1,6 @@
 /*
 
-	IntegerStemFinder v1.0.2
+	IntegerStemFinder v1.0.3
 	Licensed under the MIT License
 	Developed by Michael Rafailyk in 2025
 	https://github.com/michaelrafailyk/IntegerStemFinder
@@ -1521,6 +1521,22 @@ let axis = {
 						visualization_sidebearing.classList.add('visualization-hide');
 					}
 				}
+				
+				// looking for a way to visualize stem thickness curve
+				// it is a bit complicated to draw when steps are not equal
+				// let handler = axis.weights.visible[i].querySelector('.weight-handler');
+				// if (stem_value.length) {
+				// 	if (handler.classList.contains('weight-handler-hidden')) {
+				// 		handler.classList.remove('weight-handler-hidden');
+				// 	}
+				// 	let stem_percent = ((Number(stem_value) - stem_thinnest) * 100) / (stem_thickest - stem_thinnest);
+				// 	handler.style.bottom = stem_percent + '%';
+				// } else {
+				// 	if (!handler.classList.contains('weight-handler-hidden')) {
+				// 		handler.classList.add('weight-handler-hidden');
+				// 	}
+				// }
+				
 				// disable or enable stem and sidebearing input for instance without stem value
 				if (stem_value) {
 					stem.disabled = false;
