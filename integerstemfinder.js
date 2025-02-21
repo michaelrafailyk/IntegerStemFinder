@@ -148,13 +148,13 @@ let axis = {
 				}
 			});
 			// drag position
-			// drag position by moving the vertical line or handler
+			// drag position by moving the handler
 			let axis_box = document.getElementsByClassName('axis')[0];
 			let axis_box_rect = null;
 			let percent_prev = null;
 			let position_drag_start = null;
 			let position_drag_active = false;
-			let position_drag = axis.weights.all[i].querySelector('.weight-line');
+			let position_drag = axis.weights.all[i].querySelector('.weight-handler');
 			let position_move = function(x) {
 				let percent = ((x - axis_box_rect.left) * 100) / (axis_box_rect.right - axis_box_rect.left);
 				percent = Math.round(percent * 10) / 10;
@@ -1521,21 +1521,6 @@ let axis = {
 						visualization_sidebearing.classList.add('visualization-hide');
 					}
 				}
-				
-				// // looking for a way to visualize stem thickness curve, temporarily disabled
-				// let handler = axis.weights.visible[i].querySelector('.weight-handler');
-				// if (stem_value.length) {
-				// 	if (handler.classList.contains('weight-handler-hidden')) {
-				// 		handler.classList.remove('weight-handler-hidden');
-				// 	}
-				// 	let stem_percent = ((Number(stem_value) - stem_thinnest) * 100) / (stem_thickest - stem_thinnest);
-				// 	handler.style.bottom = stem_percent + '%';
-				// } else {
-				// 	if (!handler.classList.contains('weight-handler-hidden')) {
-				// 		handler.classList.add('weight-handler-hidden');
-				// 	}
-				// }
-				
 				// disable or enable stem and sidebearing input for instance without stem value
 				if (stem_value) {
 					stem.disabled = false;
