@@ -518,9 +518,9 @@ let axis = {
 							}
 						}
 					}
+					axis.visualization();
 					highlight();
 				}
-				axis.visualization();
 			});
 			// set hidden weights specified in defaults
 			if (axis.weights.defaults[i].hidden) {
