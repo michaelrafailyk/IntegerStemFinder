@@ -1,6 +1,6 @@
 /*
 
-	IntegerStemFinder v1.0.4
+	IntegerStemFinder v1.0.6
 	Licensed under the MIT License
 	Developed by Michael Rafailyk in 2025
 	https://github.com/michaelrafailyk/IntegerStemFinder
@@ -154,7 +154,7 @@ let axis = {
 			let percent_prev = null;
 			let position_drag_start = null;
 			let position_drag_active = false;
-			let position_drag = axis.weights.all[i].querySelector('.weight-handler');
+			let position_drag = axis.weights.all[i].querySelector('.weight-line');
 			let position_move = function(x) {
 				let percent = ((x - axis_box_rect.left) * 100) / (axis_box_rect.right - axis_box_rect.left);
 				percent = Math.round(percent * 10) / 10;
@@ -364,33 +364,33 @@ let axis = {
 				}
 				// update list of masters
 				axis.weights.masters = [];
-				for (let i = 0; i < axis.weights.visible.length; i++) {
-					if (axis.weights.visible[i].classList.contains('master')) {
-						axis.weights.masters.push(i);
+				for (let j = 0; j < axis.weights.visible.length; j++) {
+					if (axis.weights.visible[j].classList.contains('master')) {
+						axis.weights.masters.push(j);
 					}
 				}
 				// if there are less than two masters
 				if (axis.weights.masters.length < 2) {
 					// clear stem and sidebearings for all instances
-					for (let i = 0; i < axis.weights.all.length; i++) {
-						if (!axis.weights.all[i].classList.contains('master')) {
-							axis.weights.all[i].querySelector('.weight-stem').value = '';
-							axis.weights.all[i].querySelector('.weight-sidebearing').value = '';
-							axis.weights.all[i].querySelector('.weight-stem').disabled = true;
-							axis.weights.all[i].querySelector('.weight-sidebearing').disabled = true;
-							axis.weights.all[i].querySelector('.weight-stem').parentElement.classList.add('weight-stemsidebearing-hidden');
-							axis.weights.all[i].querySelector('.weight-sidebearing').parentElement.classList.add('weight-stemsidebearing-hidden');
-							if (axis.weights.all[i].hasAttribute('data-stem-extreme')) {
-								axis.weights.all[i].removeAttribute('data-stem-extreme');
+					for (let j = 0; j < axis.weights.all.length; j++) {
+						if (!axis.weights.all[j].classList.contains('master')) {
+							axis.weights.all[j].querySelector('.weight-stem').value = '';
+							axis.weights.all[j].querySelector('.weight-sidebearing').value = '';
+							axis.weights.all[j].querySelector('.weight-stem').disabled = true;
+							axis.weights.all[j].querySelector('.weight-sidebearing').disabled = true;
+							axis.weights.all[j].querySelector('.weight-stem').parentElement.classList.add('weight-stemsidebearing-hidden');
+							axis.weights.all[j].querySelector('.weight-sidebearing').parentElement.classList.add('weight-stemsidebearing-hidden');
+							if (axis.weights.all[j].hasAttribute('data-stem-extreme')) {
+								axis.weights.all[j].removeAttribute('data-stem-extreme');
 							}
-							if (axis.weights.all[i].hasAttribute('data-sidebearing-extreme')) {
-								axis.weights.all[i].removeAttribute('data-sidebearing-extreme');
+							if (axis.weights.all[j].hasAttribute('data-sidebearing-extreme')) {
+								axis.weights.all[j].removeAttribute('data-sidebearing-extreme');
 							}
 						}
 						// hide stem minus/plus buttons
-						let stem = axis.weights.all[i].querySelector('.weight-stem');
-						let stem_minus = axis.weights.all[i].querySelector('.weight-stem-minus');
-						let stem_plus = axis.weights.all[i].querySelector('.weight-stem-plus');
+						let stem = axis.weights.all[j].querySelector('.weight-stem');
+						let stem_minus = axis.weights.all[j].querySelector('.weight-stem-minus');
+						let stem_plus = axis.weights.all[j].querySelector('.weight-stem-plus');
 						if (!stem_minus.classList.contains('weight-stem-minusplus-hide')) {
 							stem_minus.classList.add('weight-stem-minusplus-hide');
 						}
@@ -398,15 +398,19 @@ let axis = {
 							stem_plus.classList.add('weight-stem-minusplus-hide');
 						}
 					}
-					// last master toggled to instance – hide its visualization
+					// last master toggled to instance – hide its visualization and handler
 					if (axis.weights.masters.length == 0) {
 						let visualization_stem = axis.weights.all[i].querySelector('.visualization-stem');
 						let visualization_sidebearing = axis.weights.all[i].querySelector('.visualization-sidebearing');
+						let handler = axis.weights.all[i].querySelector('.weight-handler');
 						if (!visualization_stem.classList.contains('visualization-hide')) {
 							visualization_stem.classList.add('visualization-hide');
 						}
 						if (!visualization_sidebearing.classList.contains('visualization-hide')) {
 							visualization_sidebearing.classList.add('visualization-hide');
+						}
+						if (!handler.classList.contains('weight-handler-hidden')) {
+							handler.classList.add('weight-handler-hidden');
 						}
 					}
 				}
@@ -456,6 +460,9 @@ let axis = {
 						axis.weights.all[i].querySelector('.weight-sidebearing').value = '';
 						if (axis.weights.all[i].hasAttribute('data-position-interpolated')) {
 							axis.weights.all[i].removeAttribute('data-position-interpolated');
+						}
+						if (axis.weights.all[i].hasAttribute('data-stem-interpolated')) {
+							axis.weights.all[i].removeAttribute('data-stem-interpolated');
 						}
 						if (axis.weights.all[i].hasAttribute('data-stem-extreme')) {
 							axis.weights.all[i].removeAttribute('data-stem-extreme');
@@ -1004,10 +1011,18 @@ let axis = {
 			if (axis.weights.all[i].classList.contains('adjusted')) {
 				axis.weights.all[i].classList.remove('adjusted');
 			}
-			// save interpolated position
+			// save interpolated position and stem
 			if (!axis.weights.all[i].classList.contains('hidden')) {
 				let position = axis.weights.all[i].querySelector('.weight-position').value;
 				axis.weights.all[i].setAttribute('data-position-interpolated', position);
+				let stem = axis.weights.all[i].querySelector('.weight-stem').value;
+				if (stem.length) {
+					axis.weights.all[i].setAttribute('data-stem-interpolated', stem);
+				} else {
+					if (axis.weights.all[i].hasAttribute('data-stem-interpolated')) {
+						axis.weights.all[i].removeAttribute('data-stem-interpolated');
+					}
+				}
 			}
 		}
 		
@@ -1387,97 +1402,114 @@ let axis = {
 		
 	// integerfinder end
 	},
-
-
-
+	
+	
+	
+	stems: {
+		thinnest: false,
+		thickest: false,
+		findthinnestthickest: function() {
+			// find thinnest and thickest stems and their positions in all weights list
+			axis.stems.thinnest = 'unset';
+			axis.stems.thickest = 'unset';
+			let stem_thinnest_i;
+			let stem_thickest_i;
+			for (let i = 0; i < axis.weights.all.length; i++) {
+				if (!axis.weights.all[i].classList.contains('hidden')) {
+					let stem = axis.weights.all[i].querySelector('.weight-stem').value;
+					if (stem.length) {
+						stem = Number(stem);
+						if (axis.stems.thinnest == 'unset') {
+							axis.stems.thinnest = stem;
+							stem_thinnest_i = i;
+						} else if (stem < axis.stems.thinnest) {
+							axis.stems.thinnest = stem;
+							stem_thinnest_i = i;
+						}
+						if (axis.stems.thickest == 'unset') {
+							axis.stems.thickest = stem;
+							stem_thickest_i = i;
+						} else if (stem > axis.stems.thickest || (stem == axis.stems.thinnest && stem == axis.stems.thickest)) {
+							axis.stems.thickest = stem;
+							stem_thickest_i = i;
+						}
+					}
+				}
+			}
+			// adjust thinnest and thickest stem values for special cases
+			// so visualized stems widths will be in visual harmony with its weight names even after hidding extreme weights
+			// at least one stem is set
+			if (axis.stems.thinnest !== 'unset') {
+				// just one stem is set, or all stems are equal
+				if (axis.stems.thinnest === axis.stems.thickest) {
+					// just one stem set and it's zero, or all stems are zero
+					if (axis.stems.thinnest === 0) {
+						// extend the range to all weights count, so stems will display very thin
+						// stem with zero width will be hidden from visualization
+						axis.stems.thickest = axis.weights.all.length;
+					}
+					// a single stem is set and it's not zero
+					else if (stem_thinnest_i === stem_thickest_i) {
+						// find its position in all weights list and find new thickest value (for Black weight)
+						let percent = (stem_thinnest_i * 100) / (axis.weights.all.length - 1);
+						if (stem_thinnest_i !== 0) {
+							axis.stems.thickest = (axis.stems.thinnest * 100) / percent;
+						} else {
+							axis.stems.thickest = axis.stems.thickest * axis.weights.all.length;
+						}
+						// correct if only last weight have stem set
+						if (axis.stems.thinnest === axis.stems.thickest) {
+							axis.stems.thinnest = Math.round((axis.stems.thickest / (axis.weights.all.length - 1)) * 100) / 100;
+						}
+					}
+					// all stems equal and it's not zero
+					else {
+						// similar to previous case but now with finding a medial value, so in this case all stems visually will look like stem of Medium weight
+						axis.stems.thickest = axis.stems.thickest * 2;
+					}
+				}
+				// thinnest and thickest stems are different (normal case)
+				else {
+					// check how much weights are hidden after last visible
+					let first_visible = 'unset';
+					let last_visible = 'unset';
+					for (let key in axis.weights.router) {
+						if (axis.weights.router[key] !== 'unset') {
+							if (first_visible == 'unset') {
+								first_visible = key;
+							}
+							last_visible = key;
+						}
+					}
+					// extend thickest stem to amount of hidden weights before/after
+					// normal scenario – thinnest stem at the beginning
+					if (stem_thickest_i > stem_thinnest_i) {
+						let hidden_after_last_visible = (axis.weights.all.length - 1) - last_visible;
+						let last_visible_percent = (last_visible * 100) / (axis.weights.all.length - 1);
+						axis.stems.thickest = (axis.stems.thickest * 100) / last_visible_percent;
+					}
+					// reverse scenario – thickest stem at the beginning
+					else {
+						let hidden_before_first_visible = (axis.weights.all.length - 1) - first_visible;
+						let first_visible_percent = (first_visible * 100) / (axis.weights.all.length - 1);
+						axis.stems.thickest = ((axis.stems.thickest * 100) / (100 - first_visible_percent));
+					}
+				}
+			}
+		}
+	},
+	
+	
+	
 	visualization: function() {
 		// a vertical column under each weight that display stem thickness and sidebearing size around it
 		// sidebearing size is linked to stem value so they are always truthful visually
 		
 		// find thinnest and thickest stems and their positions in all weights list
-		let stem_thinnest = 'unset';
-		let stem_thickest = 'unset';
-		let stem_thinnest_i;
-		let stem_thickest_i;
-		for (let i = 0; i < axis.weights.all.length; i++) {
-			if (!axis.weights.all[i].classList.contains('hidden')) {
-				let stem = axis.weights.all[i].querySelector('.weight-stem').value;
-				if (stem.length) {
-					stem = Number(stem);
-					if (stem_thinnest == 'unset') {
-						stem_thinnest = stem;
-						stem_thinnest_i = i;
-					} else if (stem < stem_thinnest) {
-						stem_thinnest = stem;
-						stem_thinnest_i = i;
-					}
-					if (stem_thickest == 'unset') {
-						stem_thickest = stem;
-						stem_thickest_i = i;
-					} else if (stem > stem_thickest || (stem == stem_thinnest && stem == stem_thickest)) {
-						stem_thickest = stem;
-						stem_thickest_i = i;
-					}
-				}
-			}
-		}
+		axis.stems.findthinnestthickest();
 		
-		// adjust thinnest and thickest stem values for special cases
-		// so visualized stems widths will be in visual harmony with its weight names even after hidding extreme weights
-		// at least one stem is set
-		if (stem_thinnest !== 'unset') {
-			// just one stem is set, or all stems are equal
-			if (stem_thinnest === stem_thickest) {
-				// just one stem set and it's zero, or all stems are zero
-				if (stem_thinnest === 0) {
-					// extend the range to all weights count, so stems will display very thin
-					// stem with zero width will be hidden from visualization
-					stem_thickest = axis.weights.all.length;
-				}
-				// a single stem is set and it's not zero
-				else if (stem_thinnest_i === stem_thickest_i) {
-					// find its position in all weights list and find new thickest value (for Black weight)
-					let percent = (stem_thinnest_i * 100) / (axis.weights.all.length - 1);
-					if (stem_thinnest_i !== 0) {
-						stem_thickest = (stem_thinnest * 100) / percent;
-					} else {
-						stem_thickest = stem_thickest * axis.weights.all.length;
-					}
-				}
-				// all stems equal and it's not zero
-				else {
-					// similar to previous case but now with finding a medial value, so in this case all stems visually will look like stem of Medium weight
-					stem_thickest = stem_thickest * 2;
-				}
-			}
-			// thinnest and thickest stems are different (normal case)
-			else {
-				// check how much weights are hidden after last visible
-				let first_visible = 'unset';
-				let last_visible = 'unset';
-				for (let key in axis.weights.router) {
-					if (axis.weights.router[key] !== 'unset') {
-						if (first_visible == 'unset') {
-							first_visible = key;
-						}
-						last_visible = key;
-					}
-				}
-				// extend thickest stem to amount of hidden weights before/after
-				// normal scenario – thinnest stem at the beginning
-				if (stem_thickest_i > stem_thinnest_i) {
-					let hidden_after_last_visible = (axis.weights.all.length - 1) - last_visible;
-					let last_visible_percent = (last_visible * 100) / (axis.weights.all.length - 1);
-					stem_thickest = (stem_thickest * 100) / last_visible_percent;
-				}
-				// reverse scenario – thickest stem at the beginning
-				else {
-					let hidden_before_first_visible = (axis.weights.all.length - 1) - first_visible;
-					let first_visible_percent = (first_visible * 100) / (axis.weights.all.length - 1);
-					stem_thickest = ((stem_thickest * 100) / (100 - first_visible_percent));
-				}
-			}
-			// applying visualization by comparing each value to the thickest stem value
+		// applying visualization by comparing each value to the thickest stem value
+		if (axis.stems.thinnest !== 'unset') {
 			for (let i = 0; i < axis.weights.visible.length; i++) {
 				let stem = axis.weights.visible[i].querySelector('.weight-stem');
 				let stem_value = stem.value;
@@ -1490,8 +1522,8 @@ let axis = {
 					if (visualization_stem.classList.contains('visualization-hide')) {
 						visualization_stem.classList.remove('visualization-hide');
 					}
-					let stem_width = (Number(stem_value) * 100) / stem_thickest;
-					let sidebearing_width = ((Number(sidebearing_value) * 100) / stem_thickest) * 2;
+					let stem_width = (Number(stem_value) * 100) / axis.stems.thickest;
+					let sidebearing_width = ((Number(sidebearing_value) * 100) / axis.stems.thickest) * 2;
 					// prevent the rendered stem from being less than 4% (2px)
 					if (stem_width < 4) {
 						stem_width = 4;
@@ -1592,7 +1624,115 @@ let axis = {
 			}
 		}
 		
+		// update graph
+		axis.graph.update();
+		
 	// visualization end
+	},
+
+
+
+	graph: {
+		element: document.querySelector('.graph'),
+		path: document.querySelector('.graph-path'),
+		update: function() {
+			let stem_thinnest = axis.stems.thinnest;
+			let stem_thickest = axis.stems.thickest;
+			if (stem_thinnest < 0) {
+				stem_thinnest = 0;
+			}
+			// gather data from fields
+			let position_first = Number(axis.weights.visible[0].querySelector('.weight-position').value);
+			let position_last = Number(axis.weights.visible[axis.weights.visible.length - 1].querySelector('.weight-position').value);
+			let graph_array = [];
+			for (let i = 0; i < axis.weights.visible.length; i++) {
+				let position = Number(axis.weights.visible[i].querySelector('.weight-position').value);
+				let percent_equal = (i * 100) / (axis.weights.visible.length - 1);
+				let percent_current = ((position - position_first) * 100) / (position_last - position_first);
+				let stem_equal = (100 / (axis.weights.visible.length - 1)) * i;
+				let stem_current;
+				if (axis.progressions.active > 1 && axis.weights.visible[i].hasAttribute('data-stem-interpolated')) {
+					stem_current = axis.weights.visible[i].getAttribute('data-stem-interpolated');
+				} else {
+					stem_current = axis.weights.visible[i].querySelector('.weight-stem').value;
+				}
+				if (stem_current.length) {
+					stem_current = ((Number(stem_current) - stem_thinnest) * 100) / (stem_thickest - stem_thinnest);
+				} else {
+					stem_current = 'unset';
+				}
+				let handler = axis.weights.visible[i].querySelector('.weight-handler');
+				if (stem_current !== 'unset' && stem_current >= 0 && position_last !== 0) {
+					let graph_weight = {
+						index: i,
+						percent_equal: percent_equal,
+						percent_current: percent_current,
+						stem_equal: stem_equal,
+						stem_current: stem_current
+					};
+					graph_array.push(graph_weight);
+					if (handler.classList.contains('weight-handler-hidden')) {
+						handler.classList.remove('weight-handler-hidden');
+					}
+				} else {
+					if (!handler.classList.contains('weight-handler-hidden')) {
+						handler.classList.add('weight-handler-hidden');
+					}
+				}
+			}
+			// find points
+			if (graph_array.length && axis.weights.masters.length >= 2) {
+				let points;
+				for (let i = 0; i < graph_array.length; i++) {
+					if (i === 0) {
+						points = 'M ';
+					} else {
+						points += 'L ';
+					}
+					let position;
+					let stem;
+					if (axis.progressions.active > 1) {
+						if (i > 0 && i < (graph_array.length - 1)) {
+							let position_equal_prev;
+							let position_equal_next;
+							let stem_current_prev;
+							let stem_current_next;
+							for (let j = 0; j < graph_array.length; j++) {
+								if (graph_array[j].percent_equal >= graph_array[i].percent_current) {
+									position_equal_next = graph_array[j].percent_equal;
+									stem_current_next = graph_array[j].stem_current;
+									break;
+								} else {
+									position_equal_prev = graph_array[j].percent_equal;
+									stem_current_prev = graph_array[j].stem_current;
+								}
+							}
+							let position_percent = ((graph_array[i].percent_current - position_equal_prev) * 100) / (position_equal_next - position_equal_prev);
+							position = graph_array[i].percent_current;
+							stem = ((position_percent * (stem_current_next - stem_current_prev)) / 100) + stem_current_prev;
+						} else {
+							position = graph_array[i].percent_equal;
+							stem = graph_array[i].stem_equal;
+						}
+					} else {
+						position = graph_array[i].percent_current;
+						stem = graph_array[i].stem_current;
+					}
+					points += (position * 10) + ' ' + (Math.round((115 - stem) * 100) / 100);
+					if (i < (graph_array.length - 1)) {
+						points += ' ';
+					}
+					let handler = axis.weights.visible[graph_array[i].index].querySelector('.weight-handler');
+					handler.style.bottom = (Math.round(((stem * 0.7692) + 11.54) * 100) / 100) + '%';
+				}
+				// update graph
+				axis.graph.element.style.left = (position_first / 10) + '%';
+				axis.graph.element.style.width = ((position_last - position_first) / 10) + '%';
+				axis.graph.path.setAttributeNS(null, 'd', points);
+			} else {
+				axis.graph.path.setAttributeNS(null, 'd', '');
+			}
+		}
 	},
 
 
@@ -1661,72 +1801,65 @@ let axis = {
 				sidebearing_last = Number(sidebearing_last);
 				sidebearing = true;
 			}
-			// calculate and apply the values to the weight
-			let apply_to_weight = function(i) {
-				if (progression == 'equal') {
-					stem = axis.progressions.formula.equal(stem_first, stem_last, steps, i + 1);
-				} else if (progression == 'impallari') {
-					stem = axis.progressions.formula.impallari(stem_first, stem_last, steps, i + 1);
-				} else if (progression == 'schneider') {
-					stem = axis.progressions.formula.schneider(stem_first, stem_last, steps, i + 1);
-				} else if (progression == 'lucas') {
-					stem = axis.progressions.formula.lucas(stem_first, stem_last, steps, i + 1);
-				} else if (progression == 'abraham') {
-					stem = axis.progressions.formula.abraham(stem_first, stem_last, steps, i + 1);
-				}
-				// find the percent and the weight position which is accurate but may contain decimals
-				percent = ((stem - stem_first) * 100) / (stem_last - stem_first);
-				position = position_first + (((position_last - position_first) * percent) / 100);
-				// round position to integer and recalculate corrected stem value again
-				position_accurate = position;
-				position = Math.round(position);
-				percent = ((position - position_first) * 100) / (position_last - position_first);
-				stem = Math.round((stem_first + (((stem_last - stem_first) * percent) / 100)) * 100) / 100;
-				if (axis.weights.rounded) {
-					stem = Math.round(stem);
-				}
-				// calculate sidebearing if set
-				if (sidebearing !== '') {
-					sidebearing = Math.round((sidebearing_first + (((sidebearing_last - sidebearing_first) * percent) / 100)) * 100) / 100;
+			// calculate and apply to each weight
+			for (let i = 0; i < axis.weights.visible.length; i++) {
+				// intermediate weights
+				if (i > 0 && i < axis.weights.visible.length - 1) {
+					if (progression == 'equal') {
+						stem = axis.progressions.formula.equal(stem_first, stem_last, steps, i + 1);
+					} else if (progression == 'impallari') {
+						stem = axis.progressions.formula.impallari(stem_first, stem_last, steps, i + 1);
+					} else if (progression == 'schneider') {
+						stem = axis.progressions.formula.schneider(stem_first, stem_last, steps, i + 1);
+					} else if (progression == 'lucas') {
+						stem = axis.progressions.formula.lucas(stem_first, stem_last, steps, i + 1);
+					} else if (progression == 'abraham') {
+						stem = axis.progressions.formula.abraham(stem_first, stem_last, steps, i + 1);
+					}
+					// find the percent and the weight position which is accurate but may contain decimals
+					percent = ((stem - stem_first) * 100) / (stem_last - stem_first);
+					position = position_first + (((position_last - position_first) * percent) / 100);
+					// round position to integer and recalculate corrected stem value again
+					position_accurate = position;
+					position = Math.round(position);
+					percent = ((position - position_first) * 100) / (position_last - position_first);
+					stem = Math.round((stem_first + (((stem_last - stem_first) * percent) / 100)) * 100) / 100;
 					if (axis.weights.rounded) {
-						sidebearing = Math.round(sidebearing);
+						stem = Math.round(stem);
+					}
+					// calculate sidebearing if set
+					if (sidebearing !== '') {
+						sidebearing = Math.round((sidebearing_first + (((sidebearing_last - sidebearing_first) * percent) / 100)) * 100) / 100;
+						if (axis.weights.rounded) {
+							sidebearing = Math.round(sidebearing);
+						}
+					}
+					// apply
+					axis.weights.visible[i].style.left = position_accurate / 10 + '%'
+					axis.weights.visible[i].querySelector('.weight-position').value = position;
+					axis.weights.visible[i].querySelector('.weight-stem').value = stem;
+					axis.weights.visible[i].querySelector('.weight-sidebearing').value = sidebearing;
+					if (axis.weights.visible[i].classList.contains('master')) {
+						axis.weights.visible[i].classList.remove('master');
+						axis.weights.visible[i].classList.add('instance');
 					}
 				}
-				// apply to weight
-				axis.weights.visible[i].style.left = position_accurate / 10 + '%'
-				axis.weights.visible[i].querySelector('.weight-position').value = position;
-				axis.weights.visible[i].setAttribute('data-position-interpolated', position);
-				axis.weights.visible[i].querySelector('.weight-stem').value = stem;
-				axis.weights.visible[i].querySelector('.weight-sidebearing').value = sidebearing;
+				// extreme masters
+				else {
+					position = axis.weights.visible[i].querySelector('.weight-position').value;
+					stem = axis.weights.visible[i].querySelector('.weight-stem').value;
+					if (!axis.weights.visible[i].classList.contains('master')) {
+						axis.weights.visible[i].classList.remove('instance');
+						axis.weights.visible[i].classList.add('master');
+					}
+				}
 				// toggle adjusted weight to interpolated
 				if (axis.weights.visible[i].classList.contains('adjusted')) {
 					axis.weights.visible[i].classList.remove('adjusted');
 				}
-				// toggle master to instance
-				else if (axis.weights.visible[i].classList.contains('master')) {
-					axis.weights.visible[i].classList.remove('master');
-					axis.weights.visible[i].classList.add('instance');
-				}
-			};
-			// apply to each weight
-			for (let i = 1; i < axis.weights.visible.length - 1; i++) {
-				apply_to_weight(i);
-			}
-			// toggle extreme instances to masters
-			// this is happens only for progressions, and not for Segments
-			if (!axis.weights.visible[0].classList.contains('master')) {
-				if (axis.weights.visible[0].classList.contains('adjusted')) {
-					axis.weights.visible[0].classList.remove('adjusted');
-				}
-				axis.weights.visible[0].classList.remove('instance');
-				axis.weights.visible[0].classList.add('master');
-			}
-			if (!axis.weights.visible[axis.weights.visible.length - 1].classList.contains('master')) {
-				if (axis.weights.visible[axis.weights.visible.length - 1].classList.contains('adjusted')) {
-					axis.weights.visible[axis.weights.visible.length - 1].classList.remove('adjusted');
-				}
-				axis.weights.visible[axis.weights.visible.length - 1].classList.remove('instance');
-				axis.weights.visible[axis.weights.visible.length - 1].classList.add('master');
+				// save interpolated position and stem for visualization calculation
+				axis.weights.visible[i].setAttribute('data-position-interpolated', position);
+				axis.weights.visible[i].setAttribute('data-stem-interpolated', stem);
 			}
 			// update list of masters and extreme masters parameter
 			axis.weights.masters = [];
@@ -1736,7 +1869,6 @@ let axis = {
 				}
 			}
 			axis.onlyextrememasters();
-			// update visualization
 			axis.visualization();
 			axis.sets.highlight();
 		},
@@ -1938,6 +2070,7 @@ let axis = {
 					adjusted: (weight_element.classList.contains('adjusted')) ? true : false,
 					hidden: (weight_element.classList.contains('hidden')) ? true : false,
 					position_interpolated: false,
+					stem_interpolated: false,
 					stem_extreme: false,
 					sidebearing_extreme: false,
 					percent: Number(weight_element.style.left.replace('%', '')),
@@ -1949,6 +2082,9 @@ let axis = {
 				}
 				if (weight_element.hasAttribute('data-position-interpolated')) {
 					weight.position_interpolated = weight_element.getAttribute('data-position-interpolated');
+				}
+				if (weight_element.hasAttribute('data-stem-interpolated')) {
+					weight.stem_interpolated = weight_element.getAttribute('data-stem-interpolated');
 				}
 				if (weight_element.hasAttribute('data-stem-extreme')) {
 					weight.stem_extreme = weight_element.getAttribute('data-stem-extreme');
@@ -2090,6 +2226,13 @@ let axis = {
 				} else {
 					if (weight.hasAttribute('data-position-interpolated')) {
 						weight.removeAttribute('data-position-interpolated');
+					}
+				}
+				if (data.stem_interpolated) {
+					weight.setAttribute('data-stem-interpolated', data.stem_interpolated);
+				} else {
+					if (weight.hasAttribute('data-stem-interpolated')) {
+						weight.removeAttribute('data-stem-interpolated');
 					}
 				}
 				if (data.stem_extreme) {

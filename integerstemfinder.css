@@ -39,7 +39,7 @@ body {
 	display: block;
 	position: relative;
 	width: 100%;
-	height: 520px;
+	height: 540px;
 }
 .axis::before {
 	content: "";
@@ -60,7 +60,7 @@ body {
 .progressions {
 	position: absolute;
 	left: 5px;
-	top: 125px;
+	top: 135px;
 	text-align: left;
 }
 .progression,
@@ -73,7 +73,7 @@ body {
 .rounded {
 	position: absolute;
 	left: 5px;
-	top: 263px;
+	top: 283px;
 	text-align: left;
 	cursor: pointer;
 	-webkit-transition: color .1s;
@@ -82,7 +82,7 @@ body {
 .sets {
 	position: absolute;
 	right: 5px;
-	top: 125px;
+	top: 135px;
 	text-align: right;
 	white-space: nowrap;
 }
@@ -213,7 +213,7 @@ body {
 	left: 0;
 	top: 100%;
 	width: 100%;
-	height: 16px;
+	height: 14px;
 	background: white;
 }
 .weight-section-two {
@@ -234,9 +234,9 @@ body {
 	z-index: -1;
 	position: absolute;
 	left: 0;
-	top: -16px;
+	bottom: 100%;
 	width: 100%;
-	height: 16px;
+	height: 14px;
 	background: white;
 }
 .weight-name {
@@ -313,6 +313,15 @@ body {
 	color: inherit;
 	background: transparent;
 }
+.graph {
+	display: block;
+	position: absolute;
+	left: 0;
+	top: 104px;
+	width: 100%;
+	height: 156px;
+	pointer-events: none;
+}
 .weight-controls {
 	-webkit-flex: 1;
 	flex: 1;
@@ -322,12 +331,25 @@ body {
 }
 .weight-handler {
 	position: absolute;
+	left: 50%;
+	bottom: 50%;
+	width: 8px;
+	height: 8px;
+	margin-left: -4px;
+	margin-bottom: -4px;
+	border-radius: 50%;
+}
+.weight-handler-hidden {
+	display: none;
+}
+.weight-line {
+	position: absolute;
 	left: 0;
 	top: 0;
 	width: 100%;
 	height: 100%;
 }
-.weight-handler::after {
+.weight-line::after {
 	content: "";
 	position: absolute;
 	left: 50%;
@@ -578,7 +600,8 @@ body {
 .master .weight-stem-minus::before,
 .master .weight-stem-plus::before,
 .master .weight-stem-plus::after,
-.master .weight-handler::after,
+.master .weight-handler,
+.master .weight-line::after,
 .master .visualization-sidebearing::before,
 .master .visualization-sidebearing::after,
 .master .visualization-stem {
@@ -600,7 +623,8 @@ body {
 .instance {
 	color: #2a9076;
 }
-.weight-handler::after,
+.weight-handler,
+.weight-line::after,
 .weight-position-minus::before,
 .weight-position-plus::before,
 .weight-position-plus::after,
@@ -624,7 +648,8 @@ body {
 .adjusted {
 	color: #3778ae;
 }
-.adjusted .weight-handler::after,
+.adjusted .weight-handler,
+.adjusted .weight-line::after,
 .adjusted .weight-position-minus::before,
 .adjusted .weight-position-plus::before,
 .adjusted .weight-position-plus::after,
@@ -651,12 +676,16 @@ body {
 	height: calc(100% + 60px);
 	color: #dddddd;
 }
+.graph-path {
+	stroke: #dddddd;
+}
 .hidden .weight-section-one::after,
 .hidden label,
 .hidden .weight-position-minus,
 .hidden .weight-position-plus,
 .hidden .weight-stem-minus,
 .hidden .weight-stem-plus,
+.hidden .weight-handler,
 .hidden .weight-master,
 .hidden .visualization {
 	display: none;
@@ -668,7 +697,7 @@ body {
 	margin-bottom: 0;
 	pointer-events: none;
 }
-.hidden .weight-handler::after {
+.hidden .weight-line::after {
 	background: #f3f3f3;
 }
 .hidden .weight-hide {

@@ -14,7 +14,7 @@ Video demonstration: [youtube.com/watch?v=ed7xml-1rKA](https://www.youtube.com/w
 
 ## Preview
 
-![IntegerStemFinder preview](https://repository-images.githubusercontent.com/934969198/e034e4c8-fd40-4099-bf38-3c1796bc9b16)
+![IntegerStemFinder preview](https://repository-images.githubusercontent.com/934969198/176e4ec0-cfbb-48de-9adb-2423a2ed4a2f)
 
 ## Features
 
@@ -63,9 +63,3 @@ defaults: [
 - Green – instance
 - Blue – adjusted instance
 - Gray – hidden weight
-
-## Updates
-
-#### 1.0.3
-
-Graph with diagonal lines between weights are removed, to avoid the confusion between user coordinates (that was) and stem curvature (wasn't). An updated functionality with a stem curve graph could be added later.
