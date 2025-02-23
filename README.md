@@ -29,7 +29,7 @@ Video demonstration: [youtube.com/watch?v=ed7xml-1rKA](https://www.youtube.com/w
 
 - Move the weight position by entering the value into the `position field`.
 - Move the weight position one division forward/back by clicking `+`/`-` buttons under the position field.
-- Move the weight position by dragging its `handle` (vertical line). Master movement is less restrictive. Instance movement is restricted by the range between surrounding weights. To prevent the weights from collapsing, there are bumpers 2% of the axis length.
+- Move the weight position by dragging its `handle`/`line`. Master movement is less restrictive. Instance movement is restricted by the range between surrounding weights. To prevent the weights from collapsing, there are bumpers 2% of the axis length.
 - Move the stem by entering the value into the `stem field`. The corresponding position and sidebearing will be calculated to match the new stem.
 - Move the stem one stem forward/back by clicking `+`/`-` buttons above the stem field.
 - Move the sidebearing by entering the value into the `sidebearing field`. The corresponding position and stem will be calculated to match the new sidebearing.
