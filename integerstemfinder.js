@@ -1,6 +1,6 @@
 /*
 
-	IntegerStemFinder v1.0.3
+	IntegerStemFinder v1.0.4
 	Licensed under the MIT License
 	Developed by Michael Rafailyk in 2025
 	https://github.com/michaelrafailyk/IntegerStemFinder
@@ -1715,10 +1715,16 @@ let axis = {
 			// toggle extreme instances to masters
 			// this is happens only for progressions, and not for Segments
 			if (!axis.weights.visible[0].classList.contains('master')) {
+				if (axis.weights.visible[0].classList.contains('adjusted')) {
+					axis.weights.visible[0].classList.remove('adjusted');
+				}
 				axis.weights.visible[0].classList.remove('instance');
 				axis.weights.visible[0].classList.add('master');
 			}
 			if (!axis.weights.visible[axis.weights.visible.length - 1].classList.contains('master')) {
+				if (axis.weights.visible[axis.weights.visible.length - 1].classList.contains('adjusted')) {
+					axis.weights.visible[axis.weights.visible.length - 1].classList.remove('adjusted');
+				}
 				axis.weights.visible[axis.weights.visible.length - 1].classList.remove('instance');
 				axis.weights.visible[axis.weights.visible.length - 1].classList.add('master');
 			}
@@ -2129,10 +2135,6 @@ let axis = {
 					weight_sidebearing.parentElement.classList.remove('weight-stemsidebearing-hidden');
 				}
 			}
-			// update general params and visualization
-			axis.routing();
-			axis.onlyextrememasters();
-			axis.visualization();
 			// highlight the progression button
 			if (axis.sets.list[index].progression) {
 				axis.progressions.highlight(axis.sets.list[index].progression - 1);
@@ -2140,6 +2142,13 @@ let axis = {
 				axis.progressions.highlight();
 			}
 			axis.sets.highlight(index);
+			// update general params and visualization
+			// the delay is required to let the browser to update all the fields required on visualization step
+			setTimeout(function() {
+				axis.routing();
+				axis.onlyextrememasters();
+				axis.visualization();
+			}, 0);
 		},
 		
 		removeset: function(button, index) {
