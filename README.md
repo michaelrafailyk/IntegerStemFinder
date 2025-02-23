@@ -68,4 +68,4 @@ defaults: [
 
 #### 1.0.3
 
-Graph with diagonal lines between weight are removed, to avoid the confusion between user coordinates (that was) and stem curvature (wasn't). An updated functionality with a stem curve graph could be added later.
+Graph with diagonal lines between weights are removed, to avoid the confusion between user coordinates (that was) and stem curvature (wasn't). An updated functionality with a stem curve graph could be added later.
