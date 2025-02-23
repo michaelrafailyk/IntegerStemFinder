@@ -24,14 +24,14 @@ Video demonstration: [youtube.com/watch?v=ed7xml-1rKA](https://www.youtube.com/w
 - Extrapolate outside of masters (`Segments`). If the extrapolated instances do not fit on the axis, the extrapolated area will be limited to the extreme axis position, as if there is an invisible master. Axis range is from 0 to 1000.
 
 - Adjust the instance position after interpolation. Interpolated instances are green, and adjusted instances are blue.
-- Switch any weight to master or instance by clicking the `Master`/`Instance` button.
+- Switch any weight to master or instance by clicking the `Master` / `Instance` button.
 - Hide any weight from axis by clicking the `Hide` button. This way you can control number of weights on the axis. Hidden weights do not participate in interpolation. Hidden weights are gray.
 
 - Move the weight position by entering the value into the `position field`.
-- Move the weight position one division forward/back by clicking `+`/`-` buttons under the position field.
-- Move the weight position by dragging its `handle`/`line`. Master movement is less restrictive. Instance movement is restricted by the range between surrounding weights. To prevent the weights from collapsing, there are bumpers 2% of the axis length.
+- Move the weight position one division forward/back by clicking `+` / `-` buttons under the position field.
+- Move the weight position by dragging its `handle` / `line`. Master movement is less restrictive. Instance movement is restricted by the range between surrounding weights. To prevent the weights from collapsing, there are bumpers 2% of the axis length.
 - Move the stem by entering the value into the `stem field`. The corresponding position and sidebearing will be calculated to match the new stem.
-- Move the stem one stem forward/back by clicking `+`/`-` buttons above the stem field.
+- Move the stem one stem forward/back by clicking `+` / `-` buttons above the stem field.
 - Move the sidebearing by entering the value into the `sidebearing field`. The corresponding position and stem will be calculated to match the new sidebearing.
 - All the fields are editable for masters (and for instances, if contain values).
 
