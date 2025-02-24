@@ -520,6 +520,7 @@ body {
 	opacity: 1;
 	-webkit-transition: opacity .1s;
 	transition: opacity .1s;
+	background: white;
 }
 .visualization-sidebearing::before {
 	content: "";
