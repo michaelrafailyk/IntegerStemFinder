@@ -64,7 +64,7 @@ body {
 	text-align: left;
 }
 .progression,
-.progression-segments {
+.progression-linear {
 	margin-bottom: 4px;
 	cursor: pointer;
 	-webkit-transition: color .1s;
@@ -566,7 +566,7 @@ body {
 
 /* master (and hover) color */
 .progression:hover,
-.progression-segments:hover,
+.progression-linear:hover,
 .progression-active,
 .rounded:hover,
 .rounded-active,

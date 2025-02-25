@@ -1,6 +1,6 @@
 /*
 
-	IntegerStemFinder v1.0.6
+	IntegerStemFinder v1.0.7
 	Licensed under the MIT License
 	Developed by Michael Rafailyk in 2025
 	https://github.com/michaelrafailyk/IntegerStemFinder
@@ -89,7 +89,7 @@ let axis = {
 						position.setAttribute('data-position-lastknown', position.value);
 						// master – interpolate
 						if (axis.weights.all[i].classList.contains('master')) {
-							axis.interpolation();
+							axis.interpolation.linear();
 						}
 						// instance – adjust
 						else {
@@ -121,7 +121,7 @@ let axis = {
 					position.value = Number(position.value) - 1;
 					// master – interpolate
 					if (axis.weights.all[i].classList.contains('master')) {
-						axis.interpolation();
+						axis.interpolation.linear();
 					}
 					// instance – adjust
 					else {
@@ -139,7 +139,7 @@ let axis = {
 					position.value = Number(position.value) + 1;
 					// master – interpolate
 					if (axis.weights.all[i].classList.contains('master')) {
-						axis.interpolation();
+						axis.interpolation.linear();
 					}
 					// instance – adjust
 					else {
@@ -170,7 +170,7 @@ let axis = {
 				position.value = Math.round(percent * 10);
 				// master – interpolate
 				if (axis.weights.all[i].classList.contains('master')) {
-					axis.interpolation();
+					axis.interpolation.linear();
 				}
 				// instance – adjust
 				else {
@@ -249,7 +249,7 @@ let axis = {
 					// master – interpolate
 					if (axis.weights.all[i].classList.contains('master')) {
 						axis.progressions.equalchecker();
-						axis.interpolation();
+						axis.interpolation.linear();
 					}
 					// instance – adjust
 					else {
@@ -299,7 +299,7 @@ let axis = {
 				if (sidebearing.value !== sidebearing.getAttribute('data-sidebearing-lastknown')) {
 					// master – interpolate
 					if (axis.weights.all[i].classList.contains('master')) {
-						axis.interpolation();
+						axis.interpolation.linear();
 					}
 					// instance – adjust
 					else {
@@ -352,10 +352,6 @@ let axis = {
 					if (axis.weights.all[i].hasAttribute('data-sidebearing-extreme')) {
 						axis.weights.all[i].removeAttribute('data-sidebearing-extreme');
 					}
-					// turn off active progression
-					if (axis.progressions.active) {
-						axis.progressions.highlight();
-					}
 				}
 				// make instance
 				else {
@@ -367,6 +363,11 @@ let axis = {
 				for (let j = 0; j < axis.weights.visible.length; j++) {
 					if (axis.weights.visible[j].classList.contains('master')) {
 						axis.weights.masters.push(j);
+					}
+				}
+				if (axis.weights.masters.length > 2) {
+					if (axis.progressions.active === 1) {
+						axis.progressions.highlight();
 					}
 				}
 				// if there are less than two masters
@@ -416,7 +417,7 @@ let axis = {
 				}
 				axis.onlyextrememasters();
 				axis.progressions.equalchecker();
-				axis.interpolation();
+				axis.interpolation.linear();
 			});
 			// set masters specified in defaults
 			if (axis.weights.defaults[i].master) {
@@ -486,7 +487,7 @@ let axis = {
 				// interpolate or adjust
 				if (axis.weights.masters.length > 0) {
 					// interpolate (position only) if at least 1 master is visible
-					axis.interpolation();
+					axis.interpolation.linear();
 				} else if (correction_required) {
 					// adjust unhidden instance position if it appears in a wrong order/place
 					let percent = axis.weights.defaults[i].position / 10;
@@ -591,7 +592,7 @@ let axis = {
 			else {
 				rounded.classList.remove('rounded-active');
 				axis.weights.rounded = false;
-				axis.interpolation();
+				axis.interpolation.linear();
 			}
 		});
 		
@@ -730,306 +731,694 @@ let axis = {
 
 
 
-	interpolation: function() {
-		// when moving master
+	interpolation: {
 		
-		// interpolate if at least one master is visible
-		if (!axis.weights.masters.length) {
-			return;
-		}
-		// apply a progression (instead of Segments interpolation) if it's active
-		if (axis.progressions.active) {
-			axis.progressions.apply(axis.progressions.buttons[axis.progressions.active - 1].getAttribute('data'));
-			return;
-		}
-		
-		// the following interpolation occurs when the Segments button is highlighted
-		// this is a standard master to master interpolation and extrapolation, which is how type design applications act
-		// the only difference is the extrapolation case when an instances can't fit to axis range – they will be limited to axis extreme values and the extrapolated segments will be shortened
-		
-		// interpolation
-		// between every pair of masters
-		let between_masters = function(from, to) {
-			// get the masters values and calculate the step for instances
-			let percent_from = Math.round(Number(axis.weights.visible[from].style.left.replace('%', '')) * 10) / 10;
-			let percent_to = Math.round(Number(axis.weights.visible[to].style.left.replace('%', '')) * 10) / 10;
-			let percent_step = (percent_to - percent_from) / (to - from);
-			let percent;
-			let position;
-			let stem_from;
-			let stem_to;
-			let stem_interpolate = false;
-			let stem_value = '';
-			let sidebearing_from;
-			let sidebearing_to;
-			let sidebearing_interpolate = false;
-			let sidebearing_value = '';
-			if (axis.weights.visible[from].querySelector('.weight-stem').value.length && axis.weights.visible[to].querySelector('.weight-stem').value.length) {
-				stem_from = Number(axis.weights.visible[from].querySelector('.weight-stem').value);
-				stem_to = Number(axis.weights.visible[to].querySelector('.weight-stem').value);
-				stem_interpolate = true;
+		linear: function() {
+			// when moving master
+			
+			// interpolate if at least one master is visible
+			if (!axis.weights.masters.length) {
+				return;
 			}
-			if (axis.weights.visible[from].querySelector('.weight-sidebearing').value.length && axis.weights.visible[to].querySelector('.weight-sidebearing').value.length) {
-				sidebearing_from = Number(axis.weights.visible[from].querySelector('.weight-sidebearing').value);
-				sidebearing_to = Number(axis.weights.visible[to].querySelector('.weight-sidebearing').value);
-				sidebearing_interpolate = true;
+			// apply a progression (instead of Linear interpolation) if it's active
+			if (axis.progressions.active) {
+				axis.progressions.apply(axis.progressions.buttons[axis.progressions.active - 1].getAttribute('data'));
+				return;
 			}
-			// adjust values for every weight and apply
-			let counter = 0;
-			for (let i = from + 1; i < to; i++) {
-				counter++;
-				percent = percent_from + (percent_step * counter);
-				position = Math.round(percent * 10);
-				let percent_corrected = ((position - (percent_from * 10)) * 100) / ((percent_to * 10) - (percent_from * 10));
-				if (stem_interpolate) {
-					stem_value = Math.round((stem_from + (((stem_to - stem_from) * percent_corrected) / 100)) * 100) / 100;
-					if (axis.weights.rounded) {
-						stem_value = Math.round(stem_value);
-					}
-				}
-				if (sidebearing_interpolate) {
-					sidebearing_value = Math.round((sidebearing_from + (((sidebearing_to - sidebearing_from) * percent_corrected) / 100)) * 100) / 100;
-					if (axis.weights.rounded) {
-						sidebearing_value = Math.round(sidebearing_value);
-					}
-				}
-				axis.weights.visible[i].style.left = percent + '%';
-				axis.weights.visible[i].querySelector('.weight-position').value = position;
-				axis.weights.visible[i].querySelector('.weight-stem').value = stem_value;
-				axis.weights.visible[i].querySelector('.weight-sidebearing').value = sidebearing_value;
-			}
-		};
-		
-		// extrapolation
-		// before the first master
-		let before_first_master = function(from, to, next_master) {
-			// get interpolated values and calculate extrapolation values
-			let percent_to = Number(axis.weights.visible[to].style.left.replace('%', ''));
-			let percent_next_master = Number(axis.weights.visible[next_master].style.left.replace('%', ''));
-			let percent_from = percent_to - (((percent_next_master - percent_to) / (next_master - to)) * to);
-			if (percent_from < 0) {
-				percent_from = 0;
-			}
-			let percent;
-			let position_from = percent_from * 10;
-			let position_to = percent_to * 10;
-			let position;
-			let stem_from;
-			let stem_to;
-			let stem_next_master;
-			let stem_interpolate = false;
-			let stem_value = '';
-			let sidebearing_from;
-			let sidebearing_to;
-			let sidebearing_next_master;
-			let sidebearing_interpolate = false;
-			let sidebearing_value = '';
-			if (axis.weights.visible[to].querySelector('.weight-stem').value.length && axis.weights.visible[next_master].querySelector('.weight-stem').value.length) {
-				stem_to = Number(axis.weights.visible[to].querySelector('.weight-stem').value);
-				stem_next_master = Number(axis.weights.visible[next_master].querySelector('.weight-stem').value);
-				stem_from = stem_next_master - (((stem_next_master - stem_to) * (percent_next_master - percent_from)) / (percent_next_master - percent_to));
-				stem_interpolate = true;
-			}
-			if (axis.weights.visible[to].querySelector('.weight-sidebearing').value.length && axis.weights.visible[next_master].querySelector('.weight-sidebearing').value.length) {
-				sidebearing_to = Number(axis.weights.visible[to].querySelector('.weight-sidebearing').value);
-				sidebearing_next_master = Number(axis.weights.visible[next_master].querySelector('.weight-sidebearing').value);
-				sidebearing_from = sidebearing_next_master - (((sidebearing_next_master - sidebearing_to) * (percent_next_master - percent_from)) / (percent_next_master - percent_to));
-				sidebearing_interpolate = true;
-			}
-			// adjust values for every weight and apply
-			for (let i = 0; i < to; i++) {
-				percent = percent_from + ((i * (percent_to - percent_from)) / to);
-				position = Math.round(percent * 10);
-				let percent_corrected = ((position - position_from) * 100) / (position_to - position_from);
-				if (percent_corrected < 0) {
-					percent_corrected = 0;
-				}
-				if (stem_interpolate) {
-					stem_value = Math.round((stem_from + (((stem_to - stem_from) * percent_corrected) / 100)) * 100) / 100;
-					if (axis.weights.rounded) {
-						stem_value = Math.round(stem_value);
-					}
-				}
-				if (sidebearing_interpolate) {
-					sidebearing_value = Math.round((sidebearing_from + (((sidebearing_to - sidebearing_from) * percent_corrected) / 100)) * 100) / 100;
-					if (axis.weights.rounded) {
-						sidebearing_value = Math.round(sidebearing_value);
-					}
-				}
-				axis.weights.visible[i].style.left = percent + '%';
-				axis.weights.visible[i].querySelector('.weight-position').value = position;
-				axis.weights.visible[i].querySelector('.weight-stem').value = stem_value;
-				axis.weights.visible[i].querySelector('.weight-sidebearing').value = sidebearing_value;
-				// save extreme stem and sidebearing for the adjustment function calculation
-				// it's like one more invisible weight is there before the first visible weight
-				if (i === 0) {
-					if (stem_interpolate) {
-						let stem_extreme = Math.round((stem_from - ((stem_to - stem_from) / to)) * 100) / 100;
-						if (axis.weights.rounded) {
-							stem_extreme = Math.round(stem_extreme);
-						}
-						axis.weights.visible[i].setAttribute('data-stem-extreme', stem_extreme);
-					} else {
-						if (axis.weights.visible[i].hasAttribute('data-stem-extreme')) {
-							axis.weights.visible[i].removeAttribute('data-stem-extreme');
-						}
-					}
-					if (sidebearing_interpolate) {
-						let sidebearing_extreme = Math.round((sidebearing_from - ((sidebearing_to - sidebearing_from) / to)) * 100) / 100;
-						if (axis.weights.rounded) {
-							sidebearing_extreme = Math.round(sidebearing_extreme);
-						}
-						axis.weights.visible[i].setAttribute('data-sidebearing-extreme', sidebearing_extreme);
-					} else {
-						if (axis.weights.visible[i].hasAttribute('data-sidebearing-extreme')) {
-							axis.weights.visible[i].removeAttribute('data-sidebearing-extreme');
-						}
-					}
-				}
-			}
-		};
-		
-		// extrapolation
-		// after the last master
-		let after_last_master = function(from, to, prev_master) {
-			// get interpolated values and calculate extrapolation values
-			let percent_prev_master = Number(axis.weights.visible[prev_master].style.left.replace('%', ''));
-			let percent_from = Number(axis.weights.visible[from].style.left.replace('%', ''));
-			let percent_to = percent_from + (((percent_from - percent_prev_master) / (from - prev_master)) * (to - from));
-			if (percent_to > 100) {
-				percent_to = 100;
-			}
-			let percent;
-			let position_from = percent_from * 10;
-			let position_to = percent_to * 10;
-			let position;
-			let stem_prev_master;
-			let stem_from;
-			let stem_to;
-			let stem_interpolate = false;
-			let stem_value = '';
-			let sidebearing_prev_master;
-			let sidebearing_from;
-			let sidebearing_to;
-			let sidebearing_interpolate = false;
-			let sidebearing_value = '';
-			if (axis.weights.visible[from].querySelector('.weight-stem').value.length && axis.weights.visible[prev_master].querySelector('.weight-stem').value.length) {
-				stem_from = Number(axis.weights.visible[from].querySelector('.weight-stem').value);
-				stem_prev_master = Number(axis.weights.visible[prev_master].querySelector('.weight-stem').value);
-				stem_to = stem_prev_master + (((stem_from - stem_prev_master) * (percent_to - percent_prev_master)) / (percent_from - percent_prev_master));
-				stem_interpolate = true;
-			}
-			if (axis.weights.visible[from].querySelector('.weight-sidebearing').value.length && axis.weights.visible[prev_master].querySelector('.weight-sidebearing').value.length) {
-				sidebearing_from = Number(axis.weights.visible[from].querySelector('.weight-sidebearing').value);
-				sidebearing_prev_master = Number(axis.weights.visible[prev_master].querySelector('.weight-sidebearing').value);
-				sidebearing_to = sidebearing_prev_master + (((sidebearing_from - sidebearing_prev_master) * (percent_to - percent_prev_master)) / (percent_from - percent_prev_master));
-				sidebearing_interpolate = true;
-			}
-			// adjust values for every weight and apply
-			for (let i = from + 1; i < axis.weights.visible.length; i++) {
-				percent = percent_from + (((i - from) * (percent_to - percent_from)) / (to - from));
-				position = Math.round(percent * 10);
-				let percent_corrected = ((position - position_from) * 100) / (position_to - position_from);
-				if (percent_corrected > 100) {
-					percent_corrected = 100;
-				}
-				if (stem_interpolate) {
-					stem_value = Math.round((stem_from + (((stem_to - stem_from) * percent_corrected) / 100)) * 100) / 100;
-					if (axis.weights.rounded) {
-						stem_value = Math.round(stem_value);
-					}
-				}
-				if (sidebearing_interpolate) {
-					sidebearing_value = Math.round((sidebearing_from + (((sidebearing_to - sidebearing_from) * percent_corrected) / 100)) * 100) / 100;
-					if (axis.weights.rounded) {
-						sidebearing_value = Math.round(sidebearing_value);
-					}
-				}
-				axis.weights.visible[i].style.left = percent + '%';
-				axis.weights.visible[i].querySelector('.weight-position').value = position;
-				axis.weights.visible[i].querySelector('.weight-stem').value = stem_value;
-				axis.weights.visible[i].querySelector('.weight-sidebearing').value = sidebearing_value;
-				// save extreme stem and sidebearing for the adjustment function calculation
-				// it's like one more invisible weight is there after the last visible weight
-				if (i === (axis.weights.visible.length - 1)) {
-					if (stem_interpolate) {
-						let stem_extreme = Math.round((stem_to + ((stem_to - stem_from) / (to - from))) * 100) / 100;
-						if (axis.weights.rounded) {
-							stem_extreme = Math.round(stem_extreme);
-						}
-						axis.weights.visible[i].setAttribute('data-stem-extreme', stem_extreme);
-					} else {
-						if (axis.weights.visible[i].hasAttribute('data-stem-extreme')) {
-							axis.weights.visible[i].removeAttribute('data-stem-extreme');
-						}
-					}
-					if (sidebearing_interpolate) {
-						let sidebearing_extreme = Math.round((sidebearing_to + ((sidebearing_to - sidebearing_from) / (to - from))) * 100) / 100;
-						if (axis.weights.rounded) {
-							sidebearing_extreme = Math.round(sidebearing_extreme);
-						}
-						axis.weights.visible[i].setAttribute('data-sidebearing-extreme', sidebearing_extreme);
-					} else {
-						if (axis.weights.visible[i].hasAttribute('data-sidebearing-extreme')) {
-							axis.weights.visible[i].removeAttribute('data-sidebearing-extreme');
-						}
-					}
-				}
-			}
-		};
-		
-		// find a range of instances between each pairs of masters, as well as before first and after last master
-		// first and/or last weights are masters
-		// perhaps this case should be redirected to Equal interpolation at the beginning of this function
-		if (axis.weights.onlyextrememasters) {
-			between_masters(0, axis.weights.visible.length - 1);
-		}
-		// only one master is in the middle
-		else if (axis.weights.masters.length == 1 && axis.weights.masters[0] !== 0 && axis.weights.masters[0] !== axis.weights.visible.length - 1) {
-			between_masters(0, axis.weights.masters[0]);
-			between_masters(axis.weights.masters[0], axis.weights.visible.length - 1);
-		}
-		// two or more masters are visible and they are not extreme masters only
-		// this is what Segments interpolation intended for
-		else {
+			
+			// the following interpolation occurs when the Linear button is highlighted
+			// this is a standard master to master interpolation and extrapolation, which is how type design applications act
+			// the only difference is the extrapolation case when an instances can't fit to axis range – they will be limited to axis extreme values and the extrapolated segments will be shortened
+			
+			// interpolation
 			// between every pair of masters
-			for (let i = 0; i < axis.weights.masters.length - 1; i++) {
-				between_masters(axis.weights.masters[i], axis.weights.masters[i + 1]);
-			}
+			let between_masters = function(from, to) {
+				// get the masters values and calculate the step for instances
+				let percent_from = Math.round(Number(axis.weights.visible[from].style.left.replace('%', '')) * 10) / 10;
+				let percent_to = Math.round(Number(axis.weights.visible[to].style.left.replace('%', '')) * 10) / 10;
+				let percent_step = (percent_to - percent_from) / (to - from);
+				let percent;
+				let position;
+				let stem_from;
+				let stem_to;
+				let stem_interpolate = false;
+				let stem_value = '';
+				let sidebearing_from;
+				let sidebearing_to;
+				let sidebearing_interpolate = false;
+				let sidebearing_value = '';
+				if (axis.weights.visible[from].querySelector('.weight-stem').value.length && axis.weights.visible[to].querySelector('.weight-stem').value.length) {
+					stem_from = Number(axis.weights.visible[from].querySelector('.weight-stem').value);
+					stem_to = Number(axis.weights.visible[to].querySelector('.weight-stem').value);
+					stem_interpolate = true;
+				}
+				if (axis.weights.visible[from].querySelector('.weight-sidebearing').value.length && axis.weights.visible[to].querySelector('.weight-sidebearing').value.length) {
+					sidebearing_from = Number(axis.weights.visible[from].querySelector('.weight-sidebearing').value);
+					sidebearing_to = Number(axis.weights.visible[to].querySelector('.weight-sidebearing').value);
+					sidebearing_interpolate = true;
+				}
+				// adjust values for every weight and apply
+				let counter = 0;
+				for (let i = from + 1; i < to; i++) {
+					counter++;
+					percent = percent_from + (percent_step * counter);
+					position = Math.round(percent * 10);
+					let percent_corrected = ((position - (percent_from * 10)) * 100) / ((percent_to * 10) - (percent_from * 10));
+					if (stem_interpolate) {
+						stem_value = Math.round((stem_from + (((stem_to - stem_from) * percent_corrected) / 100)) * 100) / 100;
+						if (axis.weights.rounded) {
+							stem_value = Math.round(stem_value);
+						}
+					}
+					if (sidebearing_interpolate) {
+						sidebearing_value = Math.round((sidebearing_from + (((sidebearing_to - sidebearing_from) * percent_corrected) / 100)) * 100) / 100;
+						if (axis.weights.rounded) {
+							sidebearing_value = Math.round(sidebearing_value);
+						}
+					}
+					axis.weights.visible[i].style.left = percent + '%';
+					axis.weights.visible[i].querySelector('.weight-position').value = position;
+					axis.weights.visible[i].querySelector('.weight-stem').value = stem_value;
+					axis.weights.visible[i].querySelector('.weight-sidebearing').value = sidebearing_value;
+				}
+			};
+			
+			// extrapolation
 			// before the first master
-			if (axis.weights.masters[0] !== 0) {
-				before_first_master(0, axis.weights.masters[0], axis.weights.masters[1]);
-			}
+			let before_first_master = function(from, to, next_master) {
+				// get interpolated values and calculate extrapolation values
+				let percent_to = Number(axis.weights.visible[to].style.left.replace('%', ''));
+				let percent_next_master = Number(axis.weights.visible[next_master].style.left.replace('%', ''));
+				let percent_from = percent_to - (((percent_next_master - percent_to) / (next_master - to)) * to);
+				if (percent_from < 0) {
+					percent_from = 0;
+				}
+				let percent;
+				let position_from = percent_from * 10;
+				let position_to = percent_to * 10;
+				let position;
+				let stem_from;
+				let stem_to;
+				let stem_next_master;
+				let stem_interpolate = false;
+				let stem_value = '';
+				let sidebearing_from;
+				let sidebearing_to;
+				let sidebearing_next_master;
+				let sidebearing_interpolate = false;
+				let sidebearing_value = '';
+				if (axis.weights.visible[to].querySelector('.weight-stem').value.length && axis.weights.visible[next_master].querySelector('.weight-stem').value.length) {
+					stem_to = Number(axis.weights.visible[to].querySelector('.weight-stem').value);
+					stem_next_master = Number(axis.weights.visible[next_master].querySelector('.weight-stem').value);
+					stem_from = stem_next_master - (((stem_next_master - stem_to) * (percent_next_master - percent_from)) / (percent_next_master - percent_to));
+					stem_interpolate = true;
+				}
+				if (axis.weights.visible[to].querySelector('.weight-sidebearing').value.length && axis.weights.visible[next_master].querySelector('.weight-sidebearing').value.length) {
+					sidebearing_to = Number(axis.weights.visible[to].querySelector('.weight-sidebearing').value);
+					sidebearing_next_master = Number(axis.weights.visible[next_master].querySelector('.weight-sidebearing').value);
+					sidebearing_from = sidebearing_next_master - (((sidebearing_next_master - sidebearing_to) * (percent_next_master - percent_from)) / (percent_next_master - percent_to));
+					sidebearing_interpolate = true;
+				}
+				// adjust values for every weight and apply
+				for (let i = 0; i < to; i++) {
+					percent = percent_from + ((i * (percent_to - percent_from)) / to);
+					position = Math.round(percent * 10);
+					let percent_corrected = ((position - position_from) * 100) / (position_to - position_from);
+					if (percent_corrected < 0) {
+						percent_corrected = 0;
+					}
+					if (stem_interpolate) {
+						stem_value = Math.round((stem_from + (((stem_to - stem_from) * percent_corrected) / 100)) * 100) / 100;
+						if (axis.weights.rounded) {
+							stem_value = Math.round(stem_value);
+						}
+					}
+					if (sidebearing_interpolate) {
+						sidebearing_value = Math.round((sidebearing_from + (((sidebearing_to - sidebearing_from) * percent_corrected) / 100)) * 100) / 100;
+						if (axis.weights.rounded) {
+							sidebearing_value = Math.round(sidebearing_value);
+						}
+					}
+					axis.weights.visible[i].style.left = percent + '%';
+					axis.weights.visible[i].querySelector('.weight-position').value = position;
+					axis.weights.visible[i].querySelector('.weight-stem').value = stem_value;
+					axis.weights.visible[i].querySelector('.weight-sidebearing').value = sidebearing_value;
+					// save extreme stem and sidebearing for the adjustment function calculation
+					// it's like one more invisible weight is there before the first visible weight
+					if (i === 0) {
+						if (stem_interpolate) {
+							let stem_extreme = Math.round((stem_from - ((stem_to - stem_from) / to)) * 100) / 100;
+							if (axis.weights.rounded) {
+								stem_extreme = Math.round(stem_extreme);
+							}
+							axis.weights.visible[i].setAttribute('data-stem-extreme', stem_extreme);
+						} else {
+							if (axis.weights.visible[i].hasAttribute('data-stem-extreme')) {
+								axis.weights.visible[i].removeAttribute('data-stem-extreme');
+							}
+						}
+						if (sidebearing_interpolate) {
+							let sidebearing_extreme = Math.round((sidebearing_from - ((sidebearing_to - sidebearing_from) / to)) * 100) / 100;
+							if (axis.weights.rounded) {
+								sidebearing_extreme = Math.round(sidebearing_extreme);
+							}
+							axis.weights.visible[i].setAttribute('data-sidebearing-extreme', sidebearing_extreme);
+						} else {
+							if (axis.weights.visible[i].hasAttribute('data-sidebearing-extreme')) {
+								axis.weights.visible[i].removeAttribute('data-sidebearing-extreme');
+							}
+						}
+					}
+				}
+			};
+			
+			// extrapolation
 			// after the last master
-			if (axis.weights.masters[axis.weights.masters.length - 1] < axis.weights.visible.length - 1) {
-				after_last_master(axis.weights.masters[axis.weights.masters.length - 1], axis.weights.visible.length - 1, axis.weights.masters[axis.weights.masters.length - 2]);
+			let after_last_master = function(from, to, prev_master) {
+				// get interpolated values and calculate extrapolation values
+				let percent_prev_master = Number(axis.weights.visible[prev_master].style.left.replace('%', ''));
+				let percent_from = Number(axis.weights.visible[from].style.left.replace('%', ''));
+				let percent_to = percent_from + (((percent_from - percent_prev_master) / (from - prev_master)) * (to - from));
+				if (percent_to > 100) {
+					percent_to = 100;
+				}
+				let percent;
+				let position_from = percent_from * 10;
+				let position_to = percent_to * 10;
+				let position;
+				let stem_prev_master;
+				let stem_from;
+				let stem_to;
+				let stem_interpolate = false;
+				let stem_value = '';
+				let sidebearing_prev_master;
+				let sidebearing_from;
+				let sidebearing_to;
+				let sidebearing_interpolate = false;
+				let sidebearing_value = '';
+				if (axis.weights.visible[from].querySelector('.weight-stem').value.length && axis.weights.visible[prev_master].querySelector('.weight-stem').value.length) {
+					stem_from = Number(axis.weights.visible[from].querySelector('.weight-stem').value);
+					stem_prev_master = Number(axis.weights.visible[prev_master].querySelector('.weight-stem').value);
+					stem_to = stem_prev_master + (((stem_from - stem_prev_master) * (percent_to - percent_prev_master)) / (percent_from - percent_prev_master));
+					stem_interpolate = true;
+				}
+				if (axis.weights.visible[from].querySelector('.weight-sidebearing').value.length && axis.weights.visible[prev_master].querySelector('.weight-sidebearing').value.length) {
+					sidebearing_from = Number(axis.weights.visible[from].querySelector('.weight-sidebearing').value);
+					sidebearing_prev_master = Number(axis.weights.visible[prev_master].querySelector('.weight-sidebearing').value);
+					sidebearing_to = sidebearing_prev_master + (((sidebearing_from - sidebearing_prev_master) * (percent_to - percent_prev_master)) / (percent_from - percent_prev_master));
+					sidebearing_interpolate = true;
+				}
+				// adjust values for every weight and apply
+				for (let i = from + 1; i < axis.weights.visible.length; i++) {
+					percent = percent_from + (((i - from) * (percent_to - percent_from)) / (to - from));
+					position = Math.round(percent * 10);
+					let percent_corrected = ((position - position_from) * 100) / (position_to - position_from);
+					if (percent_corrected > 100) {
+						percent_corrected = 100;
+					}
+					if (stem_interpolate) {
+						stem_value = Math.round((stem_from + (((stem_to - stem_from) * percent_corrected) / 100)) * 100) / 100;
+						if (axis.weights.rounded) {
+							stem_value = Math.round(stem_value);
+						}
+					}
+					if (sidebearing_interpolate) {
+						sidebearing_value = Math.round((sidebearing_from + (((sidebearing_to - sidebearing_from) * percent_corrected) / 100)) * 100) / 100;
+						if (axis.weights.rounded) {
+							sidebearing_value = Math.round(sidebearing_value);
+						}
+					}
+					axis.weights.visible[i].style.left = percent + '%';
+					axis.weights.visible[i].querySelector('.weight-position').value = position;
+					axis.weights.visible[i].querySelector('.weight-stem').value = stem_value;
+					axis.weights.visible[i].querySelector('.weight-sidebearing').value = sidebearing_value;
+					// save extreme stem and sidebearing for the adjustment function calculation
+					// it's like one more invisible weight is there after the last visible weight
+					if (i === (axis.weights.visible.length - 1)) {
+						if (stem_interpolate) {
+							let stem_extreme = Math.round((stem_to + ((stem_to - stem_from) / (to - from))) * 100) / 100;
+							if (axis.weights.rounded) {
+								stem_extreme = Math.round(stem_extreme);
+							}
+							axis.weights.visible[i].setAttribute('data-stem-extreme', stem_extreme);
+						} else {
+							if (axis.weights.visible[i].hasAttribute('data-stem-extreme')) {
+								axis.weights.visible[i].removeAttribute('data-stem-extreme');
+							}
+						}
+						if (sidebearing_interpolate) {
+							let sidebearing_extreme = Math.round((sidebearing_to + ((sidebearing_to - sidebearing_from) / (to - from))) * 100) / 100;
+							if (axis.weights.rounded) {
+								sidebearing_extreme = Math.round(sidebearing_extreme);
+							}
+							axis.weights.visible[i].setAttribute('data-sidebearing-extreme', sidebearing_extreme);
+						} else {
+							if (axis.weights.visible[i].hasAttribute('data-sidebearing-extreme')) {
+								axis.weights.visible[i].removeAttribute('data-sidebearing-extreme');
+							}
+						}
+					}
+				}
+			};
+			
+			// find a range of instances between each pairs of masters, as well as before first and after last master
+			// first and/or last weights are masters
+			// perhaps this case should be redirected to Equal interpolation at the beginning of this function
+			if (axis.weights.onlyextrememasters) {
+				between_masters(0, axis.weights.visible.length - 1);
 			}
-		}
-		
-		for (let i = 0; i < axis.weights.all.length; i++) {
-			// return default instance color if it was adjusted
-			if (axis.weights.all[i].classList.contains('adjusted')) {
-				axis.weights.all[i].classList.remove('adjusted');
+			// only one master is in the middle
+			else if (axis.weights.masters.length == 1 && axis.weights.masters[0] !== 0 && axis.weights.masters[0] !== axis.weights.visible.length - 1) {
+				between_masters(0, axis.weights.masters[0]);
+				between_masters(axis.weights.masters[0], axis.weights.visible.length - 1);
 			}
-			// save interpolated position and stem
-			if (!axis.weights.all[i].classList.contains('hidden')) {
-				let position = axis.weights.all[i].querySelector('.weight-position').value;
-				axis.weights.all[i].setAttribute('data-position-interpolated', position);
-				let stem = axis.weights.all[i].querySelector('.weight-stem').value;
-				if (stem.length) {
-					axis.weights.all[i].setAttribute('data-stem-interpolated', stem);
-				} else {
-					if (axis.weights.all[i].hasAttribute('data-stem-interpolated')) {
-						axis.weights.all[i].removeAttribute('data-stem-interpolated');
+			// two or more masters are visible and they are not extreme masters only
+			// this is what Linear interpolation intended for
+			else {
+				// between every pair of masters
+				for (let i = 0; i < axis.weights.masters.length - 1; i++) {
+					between_masters(axis.weights.masters[i], axis.weights.masters[i + 1]);
+				}
+				// before the first master
+				if (axis.weights.masters[0] !== 0) {
+					before_first_master(0, axis.weights.masters[0], axis.weights.masters[1]);
+				}
+				// after the last master
+				if (axis.weights.masters[axis.weights.masters.length - 1] < axis.weights.visible.length - 1) {
+					after_last_master(axis.weights.masters[axis.weights.masters.length - 1], axis.weights.visible.length - 1, axis.weights.masters[axis.weights.masters.length - 2]);
+				}
+			}
+			
+			for (let i = 0; i < axis.weights.all.length; i++) {
+				// return default instance color if it was adjusted
+				if (axis.weights.all[i].classList.contains('adjusted')) {
+					axis.weights.all[i].classList.remove('adjusted');
+				}
+				// save interpolated position and stem
+				if (!axis.weights.all[i].classList.contains('hidden')) {
+					let position = axis.weights.all[i].querySelector('.weight-position').value;
+					axis.weights.all[i].setAttribute('data-position-interpolated', position);
+					let stem = axis.weights.all[i].querySelector('.weight-stem').value;
+					if (stem.length) {
+						axis.weights.all[i].setAttribute('data-stem-interpolated', stem);
+					} else {
+						if (axis.weights.all[i].hasAttribute('data-stem-interpolated')) {
+							axis.weights.all[i].removeAttribute('data-stem-interpolated');
+						}
 					}
 				}
 			}
+			
+			axis.visualization();
+			axis.sets.highlight();
+			
 		}
-		
-		axis.visualization();
-		axis.sets.highlight();
 		
 	// interpolation end
+	},
+
+
+
+	progressions: {
+		// for extreme masters interpolation
+		// the steps could be equal or exponentally increasing
+		
+		formula: {
+			equal: function(t, b, s, x) {
+				return (b - t) / (s - 1) * (x - 1) + t;
+			},
+			impallari: function(t, b, s, x) {
+				return (x - 1) / (s - 1) * axis.progressions.formula.equal(t, b, s, x) + (s - x) / (s - 1) * axis.progressions.formula.lucas(t, b, s, x);
+			},
+			schneider: function(t, b, s, x) {
+				return (axis.progressions.formula.impallari(t, b, s, x) + axis.progressions.formula.lucas(t, b, s, x)) / 2;
+			},
+			lucas: function(t, b, s, x) {
+				return t * Math.pow(b / t, (x - 1) / (s - 1));
+			},
+			abraham: function(t, b, s, x) {
+				return (1 - Math.pow((x - 1) / (s - 1), 1.25)) * axis.progressions.formula.equal(t, b, s, x) + Math.pow((x - 1) / (s - 1), 1.25) * axis.progressions.formula.lucas(t, b, s, x);
+			}
+		},
+		
+		active: false,
+		linear: document.querySelector('.progression-linear'),
+		buttons: document.getElementsByClassName('progression'),
+		
+		apply: function(progression) {
+			
+			// check if extreme weights have stem value set
+			let stem_first = axis.weights.visible[0].querySelector('.weight-stem').value;
+			let stem_last = axis.weights.visible[axis.weights.visible.length - 1].querySelector('.weight-stem').value;
+			let access;
+			if (stem_first.length && stem_last.length) {
+				stem_first = Number(stem_first);
+				stem_last = Number(stem_last);
+				// if thinnest and thickest stems are not equal
+				if (stem_first !== stem_last) {
+					// more freedom for Equal progression
+					// restrict all the other progressions
+					if (progression === 'equal' || (stem_first < stem_last && stem_first > 0 && stem_last > 0)) {
+						access = true;
+					}
+				}
+			}
+			// activate Linear interpolation if extreme weights have no stem set
+			if (!access) {
+				axis.progressions.highlight();
+				axis.interpolation.linear();
+				return;
+			}
+			
+			// toggle extreme weights to masters
+			if (!axis.weights.visible[0].classList.contains('master')) {
+				axis.weights.visible[0].classList.remove('instance');
+				axis.weights.visible[0].classList.add('master');
+			}
+			if (!axis.weights.visible[axis.weights.visible.length - 1].classList.contains('master')) {
+				axis.weights.visible[axis.weights.visible.length - 1].classList.remove('instance');
+				axis.weights.visible[axis.weights.visible.length - 1].classList.add('master');
+			}
+			// check intermediate masters
+			for (let i = 1; i < axis.weights.visible.length - 1; i++) {
+				if (axis.weights.visible[i].classList.contains('master')) {
+					let master_access = true;
+					// progression is Equal
+					if (progression === 'equal') {
+						master_access = false;
+					}
+					// no stem set or stem is out of range between first and last masters stems
+					else {
+						let stem = axis.weights.visible[i].querySelector('.weight-stem').value;
+						if (stem.length) {
+							stem = Number(stem);
+							if (stem <= stem_first || stem >= stem_last) {
+								master_access = false;
+							}
+						} else {
+							master_access = false;
+						}
+					}
+					// turn master to instance
+					if (!master_access) {
+						axis.weights.visible[i].classList.remove('master');
+						axis.weights.visible[i].classList.add('instance');
+					}
+				}
+			}
+			// update list of masters and extreme masters parameter
+			axis.weights.masters = [];
+			for (let i = 0; i < axis.weights.visible.length; i++) {
+				if (axis.weights.visible[i].classList.contains('master')) {
+					axis.weights.masters.push(i);
+				}
+			}
+			axis.onlyextrememasters();
+			
+			// calculate stems for all weights
+			// if there are only extreme masters, this stems will be applied directly
+			// if there will be intermediate masters, this stems will be corrected for instances relative to intermediate masters stems set
+			let stems = [];
+			let build_stems = function() {
+				let steps = axis.weights.visible.length;
+				for (let i = 0; i < axis.weights.visible.length; i++) {
+					if (progression == 'equal') {
+						stem = axis.progressions.formula.equal(stem_first, stem_last, steps, i + 1);
+					} else if (progression == 'impallari') {
+						stem = axis.progressions.formula.impallari(stem_first, stem_last, steps, i + 1);
+					} else if (progression == 'schneider') {
+						stem = axis.progressions.formula.schneider(stem_first, stem_last, steps, i + 1);
+					} else if (progression == 'lucas') {
+						stem = axis.progressions.formula.lucas(stem_first, stem_last, steps, i + 1);
+					} else if (progression == 'abraham') {
+						stem = axis.progressions.formula.abraham(stem_first, stem_last, steps, i + 1);
+					}
+					stems.push(stem);
+				}
+			};
+			
+			// interpolate progression between every pair of masters
+			let between_masters = function(from, to) {
+				let percent;
+				let position_from = Number(axis.weights.visible[from].querySelector('.weight-position').value);
+				let position_to = Number(axis.weights.visible[to].querySelector('.weight-position').value);
+				let position;
+				let position_accurate;
+				let stem_from = axis.weights.visible[from].querySelector('.weight-stem').value;
+				let stem_to = axis.weights.visible[to].querySelector('.weight-stem').value;
+				let stem = '';
+				if (stem_from.length && stem_to.length) {
+					stem_from = Number(stem_from);
+					stem_to = Number(stem_to);
+					stem = true;
+				}
+				let sidebearing_from = axis.weights.visible[from].querySelector('.weight-sidebearing').value;
+				let sidebearing_to = axis.weights.visible[to].querySelector('.weight-sidebearing').value;
+				let sidebearing = '';
+				if (sidebearing_from.length && sidebearing_to.length) {
+					sidebearing_from = Number(sidebearing_from);
+					sidebearing_to = Number(sidebearing_to);
+					sidebearing = true;
+				}
+				// calculate and apply to each weight
+				for (let i = from; i <= to; i++) {
+					// intermediate weights
+					if (i > from && i < to) {
+						// get stem from builded array
+						if (progression == 'equal' || axis.weights.onlyextrememasters) {
+							stem = stems[i];
+						}
+						// additionally correct stem if there are intermediate masters
+						else {
+							// find interpolated percent for stem between masters
+							let stem_interpolated_from = stems[from];
+							let stem_interpolated_to = stems[to];
+							let stem_interpolated = stems[i];
+							let stem_interpolated_percent = ((stem_interpolated - stem_interpolated_from) * 100) / (stem_interpolated_to - stem_interpolated_from);
+							// calculate new stem using interpolated percent
+							stem = stem_from + ((stem_interpolated_percent * (stem_to - stem_from)) / 100);
+						}
+						// find the percent and the weight position which is accurate but may contain decimals
+						percent = ((stem - stem_from) * 100) / (stem_to - stem_from);
+						position = position_from + (((position_to - position_from) * percent) / 100);
+						// round position to integer and recalculate corrected stem value again
+						position_accurate = position;
+						position = Math.round(position);
+						percent = ((position - position_from) * 100) / (position_to - position_from);
+						stem = Math.round((stem_from + (((stem_to - stem_from) * percent) / 100)) * 100) / 100;
+						if (axis.weights.rounded) {
+							stem = Math.round(stem);
+						}
+						// calculate sidebearing if set
+						if (sidebearing !== '') {
+							sidebearing = Math.round((sidebearing_from + (((sidebearing_to - sidebearing_from) * percent) / 100)) * 100) / 100;
+							if (axis.weights.rounded) {
+								sidebearing = Math.round(sidebearing);
+							}
+						}
+						// apply
+						axis.weights.visible[i].style.left = position_accurate / 10 + '%'
+						axis.weights.visible[i].querySelector('.weight-position').value = position;
+						axis.weights.visible[i].querySelector('.weight-stem').value = stem;
+						axis.weights.visible[i].querySelector('.weight-sidebearing').value = sidebearing;
+					}
+					// extreme masters
+					else {
+						position = axis.weights.visible[i].querySelector('.weight-position').value;
+						stem = axis.weights.visible[i].querySelector('.weight-stem').value;
+					}
+					// toggle adjusted weight to interpolated
+					if (axis.weights.visible[i].classList.contains('adjusted')) {
+						axis.weights.visible[i].classList.remove('adjusted');
+					}
+					// save interpolated position and stem for visualization calculation
+					axis.weights.visible[i].setAttribute('data-position-interpolated', position);
+					axis.weights.visible[i].setAttribute('data-stem-interpolated', stem);
+				}
+			};
+			
+			// calculate stems for all weights
+			build_stems();
+			// extreme masters only
+			if (axis.weights.onlyextrememasters) {
+				between_masters(0, axis.weights.visible.length - 1);
+			}
+			// extreme masters + intermediate masters
+			else {
+				for (let i = 0; i < axis.weights.masters.length - 1; i++) {
+					between_masters(axis.weights.masters[i], axis.weights.masters[i + 1]);
+				}
+			}
+			
+			// update visualization
+			axis.visualization();
+			axis.sets.highlight();
+		},
+		
+		highlight: function(index) {
+			// highlight the progression button if index is set, and unhighlight all the others
+			for (let i = 0; i < axis.progressions.buttons.length; i++) {
+				if (i === index) {
+					axis.progressions.buttons[index].classList.add('progression-active');
+				} else {
+					if (axis.progressions.buttons[i].classList.contains('progression-active')) {
+						axis.progressions.buttons[i].classList.remove('progression-active');
+					}
+				}
+			}
+			if (index + 1) {
+				// save index of active progression
+				axis.progressions.active = index + 1;
+				if (axis.progressions.linear.classList.contains('progression-active')) {
+					axis.progressions.linear.classList.remove('progression-active');
+				}
+			} else {
+				// clear index of active progression
+				axis.progressions.active = false;
+				// highlight Linear button if at least one master is present
+				if (axis.weights.masters.length) {
+					if (!axis.progressions.linear.classList.contains('progression-active')) {
+						axis.progressions.linear.classList.add('progression-active');
+					}
+				} else {
+					if (axis.progressions.linear.classList.contains('progression-active')) {
+						axis.progressions.linear.classList.remove('progression-active');
+					}
+				}
+			}
+		},
+		
+		equalchecker: function() {
+			// highlight or unhighlight Linear or Equal button
+			if (axis.weights.masters.length) {
+				let stem_first = axis.weights.visible[0].querySelector('.weight-stem').value;
+				let stem_last = axis.weights.visible[axis.weights.visible.length - 1].querySelector('.weight-stem').value;
+				// activate Equal progression if only extreme weights are masters
+				if (!axis.progressions.active && axis.weights.onlyextrememasters && stem_first.length && stem_last.length) {
+					for (let i = 0; i < axis.progressions.buttons.length; i++) {
+						if (axis.progressions.buttons[i].getAttribute('data') == 'equal') {
+							axis.progressions.highlight(i);
+						}
+					}
+				}
+				// highlight Linear button if at least one weight is master
+				else if (!axis.progressions.active && !axis.progressions.linear.classList.contains('progression-active')) {
+					axis.progressions.linear.classList.add('progression-active');
+				}
+			}
+			// all weights are instances
+			else {
+				axis.progressions.active = false;
+				if (axis.progressions.linear.classList.contains('progression-active')) {
+					axis.progressions.linear.classList.remove('progression-active');
+				}
+			}
+		},
+		
+		readinesschecker: function(action, id) {
+			// it happens when the cursor is over the progression button (hover)
+			// check if stems are set for extreme weights, and if not – highlight them with a color
+			// if stem for extreme weight is not set, also highlight the instance button (to set stem, it should be master, not instance)
+			let check = function(index) {
+				let index_opposite = 0;
+				let weight = axis.weights.visible[index];
+				let master = weight.querySelector('.weight-master');
+				let stem = weight.querySelector('.weight-stem');
+				let stem_opposite;
+				let stem_negative = false;
+				let stems_equal = false;
+				let stems_degression = false;
+				if (stem.value.length) {
+					if (Number(stem.value) <= 0) {
+						stem_negative = true;
+					}
+					if (index == 0) {
+						index_opposite = axis.weights.visible.length - 1;
+					}
+					stem_opposite = axis.weights.visible[index_opposite].querySelector('.weight-stem');
+					if (stem.value.length && stem_opposite.value.length) {
+						if (Number(stem.value) === Number(stem_opposite.value)) {
+							stems_equal = true;
+						} else if (index < index_opposite && Number(stem.value) > Number(stem_opposite.value)) {
+							stems_degression = true;
+						} else if (index > index_opposite && Number(stem.value) < Number(stem_opposite.value)) {
+							stems_degression = true;
+						}
+					}
+				}
+				if (!stem.value.length || (stem_negative && id !== 'equal') || (stems_degression && id !== 'equal') || stems_equal) {
+					if (!stem.classList.contains('weight-stem-warning')) {
+						stem.classList.add('weight-stem-warning');
+						stem.parentElement.classList.add('weight-stemlabel-warning');
+						if (!weight.classList.contains('master') && !master.classList.contains('weight-master-warning')) {
+							master.classList.add('weight-master-warning');
+						}
+					}
+				}
+			};
+			let clear = function(index) {
+				let master = axis.weights.visible[index].querySelector('.weight-master');
+				let stem = axis.weights.visible[index].querySelector('.weight-stem');
+				if (master.classList.contains('weight-master-warning')) {
+					master.classList.remove('weight-master-warning');
+				}
+				if (stem.classList.contains('weight-stem-warning')) {
+					stem.classList.remove('weight-stem-warning');
+					stem.parentElement.classList.remove('weight-stemlabel-warning');
+				}
+			};
+			if (action == 'check') {
+				check(0);
+				check(axis.weights.visible.length - 1);
+			} else if (action == 'clear') {
+				clear(0);
+				clear(axis.weights.visible.length - 1);
+			}
+		},
+		
+		setup: function() {
+			// turn off any active progression
+			axis.progressions.linear.addEventListener('click', function() {
+				axis.progressions.highlight();
+				axis.progressions.equalchecker();
+				if (axis.progressions.active && axis.weights.onlyextrememasters) {
+					axis.progressions.apply('equal');
+				} else {
+					axis.interpolation.linear();
+				}
+			});
+			// activate the progression
+			for (let i = 0; i < axis.progressions.buttons.length; i++) {
+				// click on a progression name
+				let progression_id = axis.progressions.buttons[i].getAttribute('data');
+				axis.progressions.buttons[i].addEventListener('click', function() {
+					if (!axis.progressions.buttons[i].classList.contains('progression-active')) {
+						axis.progressions.readinesschecker('clear');
+					}
+					axis.progressions.highlight(i);
+					axis.progressions.apply(progression_id);
+				});
+				// check if the weights are ready for progression calculation – stems should be set for the extreme weights (even if interpolated)
+				if (!('ontouchstart' in document.documentElement)) {
+					axis.progressions.buttons[i].addEventListener('mouseenter', function() {
+						axis.progressions.readinesschecker('check', progression_id);
+					});
+					axis.progressions.buttons[i].addEventListener('mouseleave', function() {
+						axis.progressions.readinesschecker('clear');
+					});
+				}
+			}
+			// activate equal progression after page loading if only extreme weights are masters by default
+			axis.progressions.equalchecker();
+			// highlight the Linear button if axis.weights.defaults doesn't have two extreme visible masters set, with stems values specified
+			if (!axis.progressions.active) {
+				if (!axis.progressions.linear.classList.contains('progression-active')) {
+					axis.progressions.linear.classList.add('progression-active');
+				}
+			}
+		}
+		
+	// progressions end
 	},
 
 
@@ -1636,50 +2025,78 @@ let axis = {
 		element: document.querySelector('.graph'),
 		path: document.querySelector('.graph-path'),
 		update: function() {
+			
 			let stem_thinnest = axis.stems.thinnest;
 			let stem_thickest = axis.stems.thickest;
 			if (stem_thinnest < 0) {
 				stem_thinnest = 0;
 			}
+			
 			// gather data from fields
+			let graph_array = [];
 			let position_first = Number(axis.weights.visible[0].querySelector('.weight-position').value);
 			let position_last = Number(axis.weights.visible[axis.weights.visible.length - 1].querySelector('.weight-position').value);
-			let graph_array = [];
-			for (let i = 0; i < axis.weights.visible.length; i++) {
-				let position = Number(axis.weights.visible[i].querySelector('.weight-position').value);
-				let percent_equal = (i * 100) / (axis.weights.visible.length - 1);
-				let percent_current = ((position - position_first) * 100) / (position_last - position_first);
-				let stem_equal = (100 / (axis.weights.visible.length - 1)) * i;
-				let stem_current;
-				if (axis.progressions.active > 1 && axis.weights.visible[i].hasAttribute('data-stem-interpolated')) {
-					stem_current = axis.weights.visible[i].getAttribute('data-stem-interpolated');
-				} else {
-					stem_current = axis.weights.visible[i].querySelector('.weight-stem').value;
-				}
-				if (stem_current.length) {
-					stem_current = ((Number(stem_current) - stem_thinnest) * 100) / (stem_thickest - stem_thinnest);
-				} else {
-					stem_current = 'unset';
-				}
-				let handler = axis.weights.visible[i].querySelector('.weight-handler');
-				if (stem_current !== 'unset' && stem_current >= 0 && position_last !== 0) {
-					let graph_weight = {
-						index: i,
-						percent_equal: percent_equal,
-						percent_current: percent_current,
-						stem_equal: stem_equal,
-						stem_current: stem_current
-					};
-					graph_array.push(graph_weight);
-					if (handler.classList.contains('weight-handler-hidden')) {
-						handler.classList.remove('weight-handler-hidden');
+			let gather_data = function(from, to, segment) {
+				let position_from = Number(axis.weights.visible[from].querySelector('.weight-position').value);
+				let position_to = Number(axis.weights.visible[to].querySelector('.weight-position').value);
+				let percent_from = ((position_from - position_first) * 100) / (position_last - position_first);
+				let percent_to = ((position_to - position_first) * 100) / (position_last - position_first);
+				for (let i = from; i <= to; i++) {
+					if (i === graph_array.length) {
+						let position = Number(axis.weights.visible[i].querySelector('.weight-position').value);
+						let percent_equal = ((i - from) * 100) / (to - from);
+						// correct for progression with intermediate master
+						if (segment) {
+							percent_equal = percent_from + (percent_equal * (percent_to - percent_from)) / 100;
+						}
+						percent_equal = Math.round(percent_equal * 1000) / 1000;
+						let percent_current = ((position - position_first) * 100) / (position_last - position_first);
+						let stem_equal = percent_equal;
+						let stem_current;
+						if (axis.progressions.active > 1 && axis.weights.visible[i].hasAttribute('data-stem-interpolated')) {
+							stem_current = axis.weights.visible[i].getAttribute('data-stem-interpolated');
+						} else {
+							stem_current = axis.weights.visible[i].querySelector('.weight-stem').value;
+						}
+						if (stem_current.length) {
+							stem_current = ((Number(stem_current) - stem_thinnest) * 100) / (stem_thickest - stem_thinnest);
+						} else {
+							stem_current = 'unset';
+						}
+						let handler = axis.weights.visible[i].querySelector('.weight-handler');
+						if (stem_current !== 'unset' && stem_current >= 0 && position_to !== 0) {
+							stem_current = Math.round(stem_current * 1000) / 1000;
+							let graph_weight = {
+								index: i,
+								percent_equal: percent_equal,
+								percent_current: percent_current,
+								stem_equal: stem_equal,
+								stem_current: stem_current
+							};
+							graph_array.push(graph_weight);
+							if (handler.classList.contains('weight-handler-hidden')) {
+								handler.classList.remove('weight-handler-hidden');
+							}
+						} else {
+							if (!handler.classList.contains('weight-handler-hidden')) {
+								handler.classList.add('weight-handler-hidden');
+							}
+						}
 					}
-				} else {
-					if (!handler.classList.contains('weight-handler-hidden')) {
-						handler.classList.add('weight-handler-hidden');
-					}
+				}
+			};
+			
+			// only extreme masters or equal or linear progression
+			if (axis.progressions.active <= 1 || axis.weights.onlyextrememasters) {
+				gather_data(0, axis.weights.visible.length - 1, false);
+			}
+			// progression with intermediate master
+			else {
+				for (let i = 0; i < axis.weights.masters.length - 1; i++) {
+					gather_data(axis.weights.masters[i], axis.weights.masters[i + 1], true);
 				}
 			}
+			
 			// find points
 			if (graph_array.length && axis.weights.masters.length >= 2) {
 				let points;
@@ -1730,312 +2147,11 @@ let axis = {
 				axis.graph.element.style.width = ((position_last - position_first) / 10) + '%';
 				axis.graph.path.setAttributeNS(null, 'd', points);
 			} else {
+				// clear graph
 				axis.graph.path.setAttributeNS(null, 'd', '');
 			}
+			
 		}
-	},
-
-
-
-	progressions: {
-		// for extreme masters interpolation
-		// the steps could be equal or exponentally increasing
-		
-		formula: {
-			equal: function(t, b, s, x) {
-				return (b - t) / (s - 1) * (x - 1) + t;
-			},
-			impallari: function(t, b, s, x) {
-				return (x - 1) / (s - 1) * axis.progressions.formula.equal(t, b, s, x) + (s - x) / (s - 1) * axis.progressions.formula.lucas(t, b, s, x);
-			},
-			schneider: function(t, b, s, x) {
-				return (axis.progressions.formula.impallari(t, b, s, x) + axis.progressions.formula.lucas(t, b, s, x)) / 2;
-			},
-			lucas: function(t, b, s, x) {
-				return t * Math.pow(b / t, (x - 1) / (s - 1));
-			},
-			abraham: function(t, b, s, x) {
-				return (1 - Math.pow((x - 1) / (s - 1), 1.25)) * axis.progressions.formula.equal(t, b, s, x) + Math.pow((x - 1) / (s - 1), 1.25) * axis.progressions.formula.lucas(t, b, s, x);
-			}
-		},
-		
-		active: false,
-		segments: document.querySelector('.progression-segments'),
-		buttons: document.getElementsByClassName('progression'),
-		
-		apply: function(progression) {
-			// progression toggles the extreme weights to masters and all intermediate weights to intances
-			// check if extreme weights have stem value set
-			let steps = axis.weights.visible.length;
-			let percent;
-			let position_first = Number(axis.weights.visible[0].querySelector('.weight-position').value);
-			let position_last = Number(axis.weights.visible[axis.weights.visible.length - 1].querySelector('.weight-position').value);
-			let position;
-			let position_accurate;
-			let stem_first = axis.weights.visible[0].querySelector('.weight-stem').value;
-			let stem_last = axis.weights.visible[axis.weights.visible.length - 1].querySelector('.weight-stem').value;
-			let stem = '';
-			let sidebearing_first = axis.weights.visible[0].querySelector('.weight-sidebearing').value;
-			let sidebearing_last = axis.weights.visible[axis.weights.visible.length - 1].querySelector('.weight-sidebearing').value;
-			let sidebearing = '';
-			if (stem_first.length && stem_last.length) {
-				stem_first = Number(stem_first);
-				stem_last = Number(stem_last);
-				// if thinnest and thickest stems are not equal
-				if (stem_first !== stem_last) {
-					// more freedom for equal progression
-					// restrict all the other progressions
-					if (progression === 'equal' || (stem_first < stem_last && stem_first > 0 && stem_last > 0)) {
-						stem = true;
-					}
-				}
-			}
-			// if extreme weights have no stem set
-			if (stem === '') {
-				axis.progressions.highlight();
-				axis.interpolation();
-				return;
-			}
-			if (sidebearing_first.length && sidebearing_last.length) {
-				sidebearing_first = Number(sidebearing_first);
-				sidebearing_last = Number(sidebearing_last);
-				sidebearing = true;
-			}
-			// calculate and apply to each weight
-			for (let i = 0; i < axis.weights.visible.length; i++) {
-				// intermediate weights
-				if (i > 0 && i < axis.weights.visible.length - 1) {
-					if (progression == 'equal') {
-						stem = axis.progressions.formula.equal(stem_first, stem_last, steps, i + 1);
-					} else if (progression == 'impallari') {
-						stem = axis.progressions.formula.impallari(stem_first, stem_last, steps, i + 1);
-					} else if (progression == 'schneider') {
-						stem = axis.progressions.formula.schneider(stem_first, stem_last, steps, i + 1);
-					} else if (progression == 'lucas') {
-						stem = axis.progressions.formula.lucas(stem_first, stem_last, steps, i + 1);
-					} else if (progression == 'abraham') {
-						stem = axis.progressions.formula.abraham(stem_first, stem_last, steps, i + 1);
-					}
-					// find the percent and the weight position which is accurate but may contain decimals
-					percent = ((stem - stem_first) * 100) / (stem_last - stem_first);
-					position = position_first + (((position_last - position_first) * percent) / 100);
-					// round position to integer and recalculate corrected stem value again
-					position_accurate = position;
-					position = Math.round(position);
-					percent = ((position - position_first) * 100) / (position_last - position_first);
-					stem = Math.round((stem_first + (((stem_last - stem_first) * percent) / 100)) * 100) / 100;
-					if (axis.weights.rounded) {
-						stem = Math.round(stem);
-					}
-					// calculate sidebearing if set
-					if (sidebearing !== '') {
-						sidebearing = Math.round((sidebearing_first + (((sidebearing_last - sidebearing_first) * percent) / 100)) * 100) / 100;
-						if (axis.weights.rounded) {
-							sidebearing = Math.round(sidebearing);
-						}
-					}
-					// apply
-					axis.weights.visible[i].style.left = position_accurate / 10 + '%'
-					axis.weights.visible[i].querySelector('.weight-position').value = position;
-					axis.weights.visible[i].querySelector('.weight-stem').value = stem;
-					axis.weights.visible[i].querySelector('.weight-sidebearing').value = sidebearing;
-					if (axis.weights.visible[i].classList.contains('master')) {
-						axis.weights.visible[i].classList.remove('master');
-						axis.weights.visible[i].classList.add('instance');
-					}
-				}
-				// extreme masters
-				else {
-					position = axis.weights.visible[i].querySelector('.weight-position').value;
-					stem = axis.weights.visible[i].querySelector('.weight-stem').value;
-					if (!axis.weights.visible[i].classList.contains('master')) {
-						axis.weights.visible[i].classList.remove('instance');
-						axis.weights.visible[i].classList.add('master');
-					}
-				}
-				// toggle adjusted weight to interpolated
-				if (axis.weights.visible[i].classList.contains('adjusted')) {
-					axis.weights.visible[i].classList.remove('adjusted');
-				}
-				// save interpolated position and stem for visualization calculation
-				axis.weights.visible[i].setAttribute('data-position-interpolated', position);
-				axis.weights.visible[i].setAttribute('data-stem-interpolated', stem);
-			}
-			// update list of masters and extreme masters parameter
-			axis.weights.masters = [];
-			for (let i = 0; i < axis.weights.visible.length; i++) {
-				if (axis.weights.visible[i].classList.contains('master')) {
-					axis.weights.masters.push(i);
-				}
-			}
-			axis.onlyextrememasters();
-			axis.visualization();
-			axis.sets.highlight();
-		},
-		
-		highlight: function(index) {
-			// highlight the progression button if index is set, and unhighlight all the others
-			for (let i = 0; i < axis.progressions.buttons.length; i++) {
-				if (i === index) {
-					axis.progressions.buttons[index].classList.add('progression-active');
-				} else {
-					if (axis.progressions.buttons[i].classList.contains('progression-active')) {
-						axis.progressions.buttons[i].classList.remove('progression-active');
-					}
-				}
-			}
-			if (index + 1) {
-				// save index of active progression
-				axis.progressions.active = index + 1;
-				if (axis.progressions.segments.classList.contains('progression-active')) {
-					axis.progressions.segments.classList.remove('progression-active');
-				}
-			} else {
-				// clear index of active progression
-				axis.progressions.active = false;
-				// highlight Segments button if at least one master is present
-				if (axis.weights.masters.length) {
-					if (!axis.progressions.segments.classList.contains('progression-active')) {
-						axis.progressions.segments.classList.add('progression-active');
-					}
-				} else {
-					if (axis.progressions.segments.classList.contains('progression-active')) {
-						axis.progressions.segments.classList.remove('progression-active');
-					}
-				}
-			}
-		},
-		
-		equalchecker: function() {
-			// highlight or unhighlight Segments or Equal button
-			if (axis.weights.masters.length) {
-				let stem_first = axis.weights.visible[0].querySelector('.weight-stem').value;
-				let stem_last = axis.weights.visible[axis.weights.visible.length - 1].querySelector('.weight-stem').value;
-				// activate Equal progression if only extreme weights are masters
-				if (!axis.progressions.active && axis.weights.onlyextrememasters && stem_first.length && stem_last.length) {
-					for (let i = 0; i < axis.progressions.buttons.length; i++) {
-						if (axis.progressions.buttons[i].getAttribute('data') == 'equal') {
-							axis.progressions.highlight(i);
-						}
-					}
-				}
-				// highlight Segments button if at least one weight is master
-				else if (!axis.progressions.active && !axis.progressions.segments.classList.contains('progression-active')) {
-					axis.progressions.segments.classList.add('progression-active');
-				}
-			}
-			// all weights are instances
-			else {
-				axis.progressions.active = false;
-				if (axis.progressions.segments.classList.contains('progression-active')) {
-					axis.progressions.segments.classList.remove('progression-active');
-				}
-			}
-		},
-		
-		readinesschecker: function(action, id) {
-			// it happens when the cursor is over the progression button (hover)
-			// check if stems are set for extreme weights, and if not – highlight them with a color
-			// if stem for extreme weight is not set, also highlight the instance button (to set stem, it should be master, not instance)
-			let check = function(index) {
-				let index_opposite = 0;
-				let weight = axis.weights.visible[index];
-				let master = weight.querySelector('.weight-master');
-				let stem = weight.querySelector('.weight-stem');
-				let stem_opposite;
-				let stem_negative = false;
-				let stems_equal = false;
-				let stems_degression = false;
-				if (stem.value.length) {
-					if (Number(stem.value) <= 0) {
-						stem_negative = true;
-					}
-					if (index == 0) {
-						index_opposite = axis.weights.visible.length - 1;
-					}
-					stem_opposite = axis.weights.visible[index_opposite].querySelector('.weight-stem');
-					if (stem.value.length && stem_opposite.value.length) {
-						if (Number(stem.value) === Number(stem_opposite.value)) {
-							stems_equal = true;
-						} else if (index < index_opposite && Number(stem.value) > Number(stem_opposite.value)) {
-							stems_degression = true;
-						} else if (index > index_opposite && Number(stem.value) < Number(stem_opposite.value)) {
-							stems_degression = true;
-						}
-					}
-				}
-				if (!stem.value.length || (stem_negative && id !== 'equal') || (stems_degression && id !== 'equal') || stems_equal) {
-					if (!stem.classList.contains('weight-stem-warning')) {
-						stem.classList.add('weight-stem-warning');
-						stem.parentElement.classList.add('weight-stemlabel-warning');
-						if (!weight.classList.contains('master') && !master.classList.contains('weight-master-warning')) {
-							master.classList.add('weight-master-warning');
-						}
-					}
-				}
-			};
-			let clear = function(index) {
-				let master = axis.weights.visible[index].querySelector('.weight-master');
-				let stem = axis.weights.visible[index].querySelector('.weight-stem');
-				if (master.classList.contains('weight-master-warning')) {
-					master.classList.remove('weight-master-warning');
-				}
-				if (stem.classList.contains('weight-stem-warning')) {
-					stem.classList.remove('weight-stem-warning');
-					stem.parentElement.classList.remove('weight-stemlabel-warning');
-				}
-			};
-			if (action == 'check') {
-				check(0);
-				check(axis.weights.visible.length - 1);
-			} else if (action == 'clear') {
-				clear(0);
-				clear(axis.weights.visible.length - 1);
-			}
-		},
-		
-		setup: function() {
-			// turn off any active progression
-			axis.progressions.segments.addEventListener('click', function() {
-				axis.progressions.highlight();
-				axis.progressions.equalchecker();
-				if (axis.progressions.active && axis.weights.onlyextrememasters) {
-					axis.progressions.apply('equal');
-				} else {
-					axis.interpolation();
-				}
-			});
-			for (let i = 0; i < axis.progressions.buttons.length; i++) {
-				// click on a progression name
-				let progression_id = axis.progressions.buttons[i].getAttribute('data');
-				axis.progressions.buttons[i].addEventListener('click', function() {
-					if (!axis.progressions.buttons[i].classList.contains('progression-active')) {
-						axis.progressions.readinesschecker('clear');
-					}
-					axis.progressions.highlight(i);
-					axis.progressions.apply(progression_id);
-				});
-				// check if the weights are ready for progression calculation – stems should be set for the extreme weights (even if interpolated)
-				if (!('ontouchstart' in document.documentElement)) {
-					axis.progressions.buttons[i].addEventListener('mouseenter', function() {
-						axis.progressions.readinesschecker('check', progression_id);
-					});
-					axis.progressions.buttons[i].addEventListener('mouseleave', function() {
-						axis.progressions.readinesschecker('clear');
-					});
-				}
-			}
-			// activate equal progression if only extreme weights are masters by default
-			axis.progressions.equalchecker();
-			// highlight the segments button if axis.weights.defaults doesn't have two extreme visible masters set, with stems values specified
-			if (!axis.progressions.active) {
-				if (!axis.progressions.segments.classList.contains('progression-active')) {
-					axis.progressions.segments.classList.add('progression-active');
-				}
-			}
-		}
-		
-	// progressions end
 	},
 
 

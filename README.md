@@ -18,13 +18,13 @@ Video demonstration: [youtube.com/watch?v=ei9jeOwSu30](https://www.youtube.com/w
 
 ## Features
 
-- Interpolate linearly (`Equal`). For extreme masters with any stems (including zero or negative).
-- Interpolate with a progression (`Impallari`, `Schneider`, `Luc(as)`, `Abraham`). Only for extreme masters with positive stems.
-- Interpolate from master to master (`Segments`) with a multiple masters option. Stems or sidebearings are not required, but if set, they can contain any numerical value (positive, zero, negative).
-- Extrapolate outside of masters (`Segments`). If the extrapolated instances do not fit on the axis, the extrapolated area will be limited to the extreme axis position, as if there is an invisible master. Axis range is from 0 to 1000.
+- Interpolate from master to master (`Linear`) with a multiple masters option. Stems or sidebearings are not required, but if set, they can contain any numerical value (positive, zero, negative).
+- Extrapolate outside of masters (`Linear`) with a multiple masters option. If the extrapolated instances do not fit on the axis, the extrapolated segments will be limited to the extreme axis position (as if there is an invisible master). Axis range is from 0 to 1000.
+- Interpolate with equal steps between all weights (`Equal`). For extreme masters with any stems set (positive, zero, negative).
+- Interpolate with a progression (`Impallari`, `Schneider`, `Luc(as)`, `Abraham`) with a multiple masters option. Extreme masters should have stems with positive values. Last master stem should be bigger of the first master stem. If intermediate master stem is out of extreme masters stems range, this master will be turned to instance.
 
 - Adjust the instance position after interpolation. Interpolated instances are green, and adjusted instances are blue.
-- Switch any weight to master or instance by clicking the `Master` / `Instance` button.
+- Switch any weight to master or instance by clicking the `Master` / `Instance` button. Master weights are black.
 - Hide any weight from axis by clicking the `Hide` button. This way you can control number of weights on the axis. Hidden weights do not participate in interpolation. Hidden weights are gray.
 
 - Move the weight position by entering the value into the `position field`.
@@ -37,7 +37,7 @@ Video demonstration: [youtube.com/watch?v=ei9jeOwSu30](https://www.youtube.com/w
 
 - Save the current axis state to a set by clicking the `Save set` button. This way you can compare your interpolation strategies without losing any adjustments. Six different sets can be saved. Sets are names after letters of the Greek alphabet. Any set can be removed by clicking the `x` button next to the set name.
 
-- Move the weight to front by clicking on it anywhere. It can be useful if the weights are positioned too close and overlap each other.
+- Bring weight visually to front by clicking on it anywhere. It can be useful if the weights are positioned too close and overlap each other.
 - Switch from accurate (two decimal places) to rounded stems and sidebearings by clicking the `Rounded` button.
 - See a visualization of the stem thickness with a sidebearings around it, under the weight.
 - Predefine default weights and its parameters in an array in a JavaScript file. Here you can set default axis configuration, such as: amount of weights on axis; weight position and name; weight is master, instance, or hidden; stem and sidebearing values for masters.
