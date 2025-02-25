@@ -329,7 +329,7 @@ body {
 	width: 20px;
 	cursor: col-resize;
 }
-.weight-handler {
+.weight-handle {
 	position: absolute;
 	left: 50%;
 	bottom: 50%;
@@ -339,7 +339,7 @@ body {
 	margin-bottom: -4px;
 	border-radius: 50%;
 }
-.weight-handler-hidden {
+.weight-handle-hidden {
 	display: none;
 }
 .weight-line {
@@ -601,7 +601,7 @@ body {
 .master .weight-stem-minus::before,
 .master .weight-stem-plus::before,
 .master .weight-stem-plus::after,
-.master .weight-handler,
+.master .weight-handle,
 .master .weight-line::after,
 .master .visualization-sidebearing::before,
 .master .visualization-sidebearing::after,
@@ -624,7 +624,7 @@ body {
 .instance {
 	color: #2a9076;
 }
-.weight-handler,
+.weight-handle,
 .weight-line::after,
 .weight-position-minus::before,
 .weight-position-plus::before,
@@ -649,7 +649,7 @@ body {
 .adjusted {
 	color: #3778ae;
 }
-.adjusted .weight-handler,
+.adjusted .weight-handle,
 .adjusted .weight-line::after,
 .adjusted .weight-position-minus::before,
 .adjusted .weight-position-plus::before,
@@ -686,7 +686,7 @@ body {
 .hidden .weight-position-plus,
 .hidden .weight-stem-minus,
 .hidden .weight-stem-plus,
-.hidden .weight-handler,
+.hidden .weight-handle,
 .hidden .weight-master,
 .hidden .visualization {
 	display: none;

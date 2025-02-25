@@ -148,7 +148,7 @@ let axis = {
 				}
 			});
 			// drag position
-			// drag position by moving the handler
+			// drag position by moving the handle
 			let axis_box = document.getElementsByClassName('axis')[0];
 			let axis_box_rect = null;
 			let percent_prev = null;
@@ -399,19 +399,19 @@ let axis = {
 							stem_plus.classList.add('weight-stem-minusplus-hide');
 						}
 					}
-					// last master toggled to instance – hide its visualization and handler
+					// last master toggled to instance – hide its visualization and handle
 					if (axis.weights.masters.length == 0) {
 						let visualization_stem = axis.weights.all[i].querySelector('.visualization-stem');
 						let visualization_sidebearing = axis.weights.all[i].querySelector('.visualization-sidebearing');
-						let handler = axis.weights.all[i].querySelector('.weight-handler');
+						let handle = axis.weights.all[i].querySelector('.weight-handle');
 						if (!visualization_stem.classList.contains('visualization-hide')) {
 							visualization_stem.classList.add('visualization-hide');
 						}
 						if (!visualization_sidebearing.classList.contains('visualization-hide')) {
 							visualization_sidebearing.classList.add('visualization-hide');
 						}
-						if (!handler.classList.contains('weight-handler-hidden')) {
-							handler.classList.add('weight-handler-hidden');
+						if (!handle.classList.contains('weight-handle-hidden')) {
+							handle.classList.add('weight-handle-hidden');
 						}
 					}
 				}
@@ -2042,7 +2042,7 @@ let axis = {
 				let percent_from = ((position_from - position_first) * 100) / (position_last - position_first);
 				let percent_to = ((position_to - position_first) * 100) / (position_last - position_first);
 				for (let i = from; i <= to; i++) {
-					if (i === graph_array.length) {
+					if (!graph_array.length || (graph_array.length && (i !== graph_array[graph_array.length - 1].index))) {
 						let position = Number(axis.weights.visible[i].querySelector('.weight-position').value);
 						let percent_equal = ((i - from) * 100) / (to - from);
 						// correct for progression with intermediate master
@@ -2063,7 +2063,6 @@ let axis = {
 						} else {
 							stem_current = 'unset';
 						}
-						let handler = axis.weights.visible[i].querySelector('.weight-handler');
 						if (stem_current !== 'unset' && stem_current >= 0 && position_to !== 0) {
 							stem_current = Math.round(stem_current * 1000) / 1000;
 							let graph_weight = {
@@ -2074,27 +2073,20 @@ let axis = {
 								stem_current: stem_current
 							};
 							graph_array.push(graph_weight);
-							if (handler.classList.contains('weight-handler-hidden')) {
-								handler.classList.remove('weight-handler-hidden');
-							}
-						} else {
-							if (!handler.classList.contains('weight-handler-hidden')) {
-								handler.classList.add('weight-handler-hidden');
-							}
 						}
 					}
 				}
 			};
 			
-			// only extreme masters or equal or linear progression
-			if (axis.progressions.active <= 1 || axis.weights.onlyextrememasters) {
-				gather_data(0, axis.weights.visible.length - 1, false);
-			}
 			// progression with intermediate master
-			else {
+			if (axis.progressions.active > 1 && axis.weights.masters.length >= 3) {
 				for (let i = 0; i < axis.weights.masters.length - 1; i++) {
 					gather_data(axis.weights.masters[i], axis.weights.masters[i + 1], true);
 				}
+			}
+			// only extreme masters or equal or linear progression
+			else {
+				gather_data(0, axis.weights.visible.length - 1, false);
 			}
 			
 			// find points
@@ -2139,8 +2131,8 @@ let axis = {
 					if (i < (graph_array.length - 1)) {
 						points += ' ';
 					}
-					let handler = axis.weights.visible[graph_array[i].index].querySelector('.weight-handler');
-					handler.style.bottom = (Math.round(((stem * 0.7692) + 11.54) * 100) / 100) + '%';
+					let handle = axis.weights.visible[graph_array[i].index].querySelector('.weight-handle');
+					handle.style.bottom = (Math.round(((stem * 0.7692) + 11.54) * 100) / 100) + '%';
 				}
 				// update graph
 				axis.graph.element.style.left = (position_first / 10) + '%';
@@ -2149,6 +2141,27 @@ let axis = {
 			} else {
 				// clear graph
 				axis.graph.path.setAttributeNS(null, 'd', '');
+			}
+			// show or hide handles
+			for (let i = 0; i < axis.weights.visible.length; i++) {
+				let stem = axis.weights.visible[i].querySelector('.weight-stem').value;
+				let handle = axis.weights.visible[i].querySelector('.weight-handle');
+				if (stem.length) {
+					stem = Number(stem);
+					if (stem >= 0) {
+						if (handle.classList.contains('weight-handle-hidden')) {
+							handle.classList.remove('weight-handle-hidden');
+						}
+					} else {
+						if (!handle.classList.contains('weight-handle-hidden')) {
+							handle.classList.add('weight-handle-hidden');
+						}
+					}
+				} else {
+					if (!handle.classList.contains('weight-handle-hidden')) {
+						handle.classList.add('weight-handle-hidden');
+					}
+				}
 			}
 			
 		}
