@@ -2,8 +2,6 @@
 
 A tool for planning weight interpolation or extrapolation, with the ability to adjust instances after interpolation and to easily find the closest integer (or closest to integer if decimal) stem or sidebearing. Features: interpolate and extrapolate; switch any weight to master; hide any weight from axis; drag the weight to change its position; adjust instance after interpolation; find a closest integer stem or sidebearing; switch between accurate and rounded values; see a visualization of stems and sidebearings; compare interpolation strategies using sets.
 
-The progression formulas are taken from a [comment of Linus Romer](https://typedrawers.com/discussion/comment/34545/#Comment_34545) and from a [comment of Abraham Lee](https://typedrawers.com/discussion/comment/26280/#Comment_26280) on TypeDrawers. The idea of editable instances is inspired by a [comment of Abraham Lee](https://typedrawers.com/discussion/comment/43398/#Comment_43398). The idea of finding the closest integer stem or sidebearing is inspired by a [comment of George Thomas](https://typedrawers.com/discussion/comment/2754/#Comment_2754).
-
 ## Links
 
 Online version: [michaelrafailyk.github.io/IntegerStemFinder](https://michaelrafailyk.github.io/IntegerStemFinder/)
@@ -15,6 +13,10 @@ Video demonstration: [youtube.com/watch?v=ei9jeOwSu30](https://www.youtube.com/w
 ## Preview
 
 ![IntegerStemFinder preview](https://repository-images.githubusercontent.com/934969198/a7587405-8b05-4021-97e6-a82fc62c4a7f)
+
+## Sources
+
+The idea of editable instances is inspired by a [comment of Abraham Lee](https://typedrawers.com/discussion/comment/43398/#Comment_43398) on TypeDrawers. The idea of finding the closest integer stem or sidebearing is inspired by a [comment of George Thomas](https://typedrawers.com/discussion/comment/2754/#Comment_2754). The progression formulas are taken from a [comment of Linus Romer](https://typedrawers.com/discussion/comment/34545/#Comment_34545) and from a [comment of Abraham Lee](https://typedrawers.com/discussion/comment/26280/#Comment_26280). Interpolation of nonlinear progression with intermediate masters uses the second method from a [comment of John Hudson](https://typedrawers.com/discussion/comment/68492/#Comment_68492).
 
 ## Features
 
