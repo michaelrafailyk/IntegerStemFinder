@@ -1,6 +1,6 @@
 /*
 
-	IntegerStemFinder v1.0.9
+	IntegerStemFinder v1.0.10
 	Licensed under the MIT License
 	Developed by Michael Rafailyk in 2025
 	https://github.com/michaelrafailyk/IntegerStemFinder
@@ -381,6 +381,9 @@ let axis = {
 							axis.weights.all[j].querySelector('.weight-sidebearing').disabled = true;
 							axis.weights.all[j].querySelector('.weight-stem').parentElement.classList.add('weight-stemsidebearing-hidden');
 							axis.weights.all[j].querySelector('.weight-sidebearing').parentElement.classList.add('weight-stemsidebearing-hidden');
+							if (axis.weights.all[i].hasAttribute('data-stem-curve')) {
+								axis.weights.all[i].removeAttribute('data-stem-curve');
+							}
 							if (axis.weights.all[j].hasAttribute('data-stem-extreme')) {
 								axis.weights.all[j].removeAttribute('data-stem-extreme');
 							}
@@ -464,6 +467,9 @@ let axis = {
 						}
 						if (axis.weights.all[i].hasAttribute('data-stem-interpolated')) {
 							axis.weights.all[i].removeAttribute('data-stem-interpolated');
+						}
+						if (axis.weights.all[i].hasAttribute('data-stem-curve')) {
+							axis.weights.all[i].removeAttribute('data-stem-curve');
 						}
 						if (axis.weights.all[i].hasAttribute('data-stem-extreme')) {
 							axis.weights.all[i].removeAttribute('data-stem-extreme');
@@ -1024,6 +1030,9 @@ let axis = {
 					} else {
 						if (axis.weights.all[i].hasAttribute('data-stem-interpolated')) {
 							axis.weights.all[i].removeAttribute('data-stem-interpolated');
+						}
+						if (axis.weights.all[i].hasAttribute('data-stem-curve')) {
+							axis.weights.all[i].removeAttribute('data-stem-curve');
 						}
 					}
 				}
@@ -2239,6 +2248,7 @@ let axis = {
 					position_interpolated: false,
 					stem_interpolated: false,
 					stem_extreme: false,
+					stem_curve: false,
 					sidebearing_extreme: false,
 					percent: Number(weight_element.style.left.replace('%', '')),
 					position: weight_position.value,
@@ -2252,6 +2262,9 @@ let axis = {
 				}
 				if (weight_element.hasAttribute('data-stem-interpolated')) {
 					weight.stem_interpolated = weight_element.getAttribute('data-stem-interpolated');
+				}
+				if (weight_element.hasAttribute('data-stem-curve')) {
+					weight.stem_curve = weight_element.getAttribute('data-stem-curve');
 				}
 				if (weight_element.hasAttribute('data-stem-extreme')) {
 					weight.stem_extreme = weight_element.getAttribute('data-stem-extreme');
@@ -2400,6 +2413,13 @@ let axis = {
 				} else {
 					if (weight.hasAttribute('data-stem-interpolated')) {
 						weight.removeAttribute('data-stem-interpolated');
+					}
+				}
+				if (data.stem_curve) {
+					weight.setAttribute('data-stem-curve', data.stem_curve);
+				} else {
+					if (weight.hasAttribute('data-stem-curve')) {
+						weight.removeAttribute('data-stem-curve');
 					}
 				}
 				if (data.stem_extreme) {
