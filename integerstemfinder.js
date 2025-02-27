@@ -1280,7 +1280,7 @@ let axis = {
 					// save interpolated position and stem for visualization calculation
 					axis.weights.visible[i].setAttribute('data-position-interpolated', position);
 					axis.weights.visible[i].setAttribute('data-stem-interpolated', stem);
-					// get curved stem (for drawing graph of stems growth curve) for progression with intermediate masters
+					// save curved stem (for drawing graph of stems growth curve) for progression with intermediate masters
 					if (axis.progressions.active > 1 && axis.weights.masters.length >= 3) {
 						stem_curve = Math.round(stem_curve * 100) / 100;
 						axis.weights.visible[i].setAttribute('data-stem-curve', stem_curve);
