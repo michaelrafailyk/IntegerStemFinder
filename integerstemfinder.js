@@ -1,6 +1,6 @@
 /*
 
-	IntegerStemFinder v1.0.7
+	IntegerStemFinder v1.0.9
 	Licensed under the MIT License
 	Developed by Michael Rafailyk in 2025
 	https://github.com/michaelrafailyk/IntegerStemFinder
@@ -1172,6 +1172,23 @@ let axis = {
 					stem_to = Number(stem_to);
 					stem = true;
 				}
+				let stem_from_curve = stem_from;
+				let stem_to_curve = stem_to;
+				let stem_curve;
+				if (axis.progressions.active > 1 && axis.weights.masters.length >= 3) {
+					if (from !== 0) {
+						let percent_equal = (from * 100) / (axis.weights.visible.length - 1);
+						let percent_current = ((stems[from] - stem_first) * 100) / (stem_last - stem_first);
+						let percent = (percent_current * 100) / percent_equal;
+						stem_from_curve = stem_first + (((stem_from - stem_first) * percent) / 100);
+					}
+					if (to !== axis.weights.visible.length - 1) {
+						let percent_equal = (to * 100) / (axis.weights.visible.length - 1);
+						let percent_current = ((stems[to] - stem_first) * 100) / (stem_last - stem_first);
+						let percent = (percent_current * 100) / percent_equal;
+						stem_to_curve = stem_first + (((stem_to - stem_first) * percent) / 100);
+					}
+				}
 				let sidebearing_from = axis.weights.visible[from].querySelector('.weight-sidebearing').value;
 				let sidebearing_to = axis.weights.visible[to].querySelector('.weight-sidebearing').value;
 				let sidebearing = '';
@@ -1197,9 +1214,14 @@ let axis = {
 							let stem_interpolated_percent = ((stem_interpolated - stem_interpolated_from) * 100) / (stem_interpolated_to - stem_interpolated_from);
 							// calculate new stem using interpolated percent
 							stem = stem_from + ((stem_interpolated_percent * (stem_to - stem_from)) / 100);
+							stem_curve = stem_from_curve + ((stem_interpolated_percent * (stem_to_curve - stem_from_curve)) / 100);
 						}
 						// find the percent and the weight position which is accurate but may contain decimals
-						percent = ((stem - stem_from) * 100) / (stem_to - stem_from);
+						if (stem_from !== stem_to) {
+							percent = ((stem - stem_from) * 100) / (stem_to - stem_from);
+						} else {
+							percent = ((stems[i] - stems[from]) * 100) / (stems[to] - stems[from]);
+						}
 						position = position_from + (((position_to - position_from) * percent) / 100);
 						// round position to integer and recalculate corrected stem value again
 						position_accurate = position;
@@ -1226,6 +1248,11 @@ let axis = {
 					else {
 						position = axis.weights.visible[i].querySelector('.weight-position').value;
 						stem = axis.weights.visible[i].querySelector('.weight-stem').value;
+						if (i === from) {
+							stem_curve = stem_from_curve;
+						} else if (i === to) {
+							stem_curve = stem_to_curve;
+						}
 					}
 					// toggle adjusted weight to interpolated
 					if (axis.weights.visible[i].classList.contains('adjusted')) {
@@ -1234,6 +1261,15 @@ let axis = {
 					// save interpolated position and stem for visualization calculation
 					axis.weights.visible[i].setAttribute('data-position-interpolated', position);
 					axis.weights.visible[i].setAttribute('data-stem-interpolated', stem);
+					// save curved stem for drawing correct graph
+					if (axis.progressions.active > 1 && axis.weights.masters.length >= 3) {
+						stem_curve = Math.round(stem_curve * 100) / 100;
+						axis.weights.visible[i].setAttribute('data-stem-curve', stem_curve);
+					} else {
+						if (axis.weights.visible[i].hasAttribute('data-stem-curve')) {
+							axis.weights.visible[i].removeAttribute('data-stem-curve');
+						}
+					}
 				}
 			};
 			
@@ -2053,7 +2089,9 @@ let axis = {
 						let percent_current = ((position - position_first) * 100) / (position_last - position_first);
 						let stem_equal = percent_equal;
 						let stem_current;
-						if (axis.progressions.active > 1 && axis.weights.visible[i].hasAttribute('data-stem-interpolated')) {
+						if (axis.progressions.active > 1 && axis.weights.masters.length >= 3 && axis.weights.visible[i].hasAttribute('data-stem-curve')) {
+							stem_current = axis.weights.visible[i].getAttribute('data-stem-curve');
+						} else if (axis.progressions.active > 1 && axis.weights.visible[i].hasAttribute('data-stem-interpolated')) {
 							stem_current = axis.weights.visible[i].getAttribute('data-stem-interpolated');
 						} else {
 							stem_current = axis.weights.visible[i].querySelector('.weight-stem').value;
