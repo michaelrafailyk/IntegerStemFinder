@@ -1,6 +1,6 @@
 /*
 
-	IntegerStemFinder v1.0.11
+	IntegerStemFinder v1.0.12
 	Licensed under the MIT License
 	Developed by Michael Rafailyk in 2025
 	https://github.com/michaelrafailyk/IntegerStemFinder
