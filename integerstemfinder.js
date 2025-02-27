@@ -1,6 +1,6 @@
 /*
 
-	IntegerStemFinder v1.0.10
+	IntegerStemFinder v1.0.11
 	Licensed under the MIT License
 	Developed by Michael Rafailyk in 2025
 	https://github.com/michaelrafailyk/IntegerStemFinder
@@ -1031,10 +1031,11 @@ let axis = {
 						if (axis.weights.all[i].hasAttribute('data-stem-interpolated')) {
 							axis.weights.all[i].removeAttribute('data-stem-interpolated');
 						}
-						if (axis.weights.all[i].hasAttribute('data-stem-curve')) {
-							axis.weights.all[i].removeAttribute('data-stem-curve');
-						}
 					}
+				}
+				// clear curved stem from progression interpolation with intermediate masters
+				if (axis.weights.all[i].hasAttribute('data-stem-curve')) {
+					axis.weights.all[i].removeAttribute('data-stem-curve');
 				}
 			}
 			
@@ -1181,16 +1182,19 @@ let axis = {
 					stem_to = Number(stem_to);
 					stem = true;
 				}
+				// calculate curved (from and to) stems (for drawing graph of stems growth curve) for progression with intermediate masters
 				let stem_from_curve = stem_from;
 				let stem_to_curve = stem_to;
 				let stem_curve;
 				if (axis.progressions.active > 1 && axis.weights.masters.length >= 3) {
+					// from master is not the first one
 					if (from !== 0) {
 						let percent_equal = (from * 100) / (axis.weights.visible.length - 1);
 						let percent_current = ((stems[from] - stem_first) * 100) / (stem_last - stem_first);
 						let percent = (percent_current * 100) / percent_equal;
 						stem_from_curve = stem_first + (((stem_from - stem_first) * percent) / 100);
 					}
+					// to master is not the last one
 					if (to !== axis.weights.visible.length - 1) {
 						let percent_equal = (to * 100) / (axis.weights.visible.length - 1);
 						let percent_current = ((stems[to] - stem_first) * 100) / (stem_last - stem_first);
@@ -1223,7 +1227,10 @@ let axis = {
 							let stem_interpolated_percent = ((stem_interpolated - stem_interpolated_from) * 100) / (stem_interpolated_to - stem_interpolated_from);
 							// calculate new stem using interpolated percent
 							stem = stem_from + ((stem_interpolated_percent * (stem_to - stem_from)) / 100);
-							stem_curve = stem_from_curve + ((stem_interpolated_percent * (stem_to_curve - stem_from_curve)) / 100);
+							// calculate curved stem (for drawing graph of stems growth curve) for progression with intermediate masters
+							if (axis.progressions.active > 1 && axis.weights.masters.length >= 3) {
+								stem_curve = stem_from_curve + ((stem_interpolated_percent * (stem_to_curve - stem_from_curve)) / 100);
+							}
 						}
 						// find the percent and the weight position which is accurate but may contain decimals
 						if (stem_from !== stem_to) {
@@ -1257,10 +1264,13 @@ let axis = {
 					else {
 						position = axis.weights.visible[i].querySelector('.weight-position').value;
 						stem = axis.weights.visible[i].querySelector('.weight-stem').value;
-						if (i === from) {
-							stem_curve = stem_from_curve;
-						} else if (i === to) {
-							stem_curve = stem_to_curve;
+						// get curved stem (for drawing graph of stems growth curve) for progression with intermediate masters
+						if (axis.progressions.active > 1 && axis.weights.masters.length >= 3) {
+							if (i === from) {
+								stem_curve = stem_from_curve;
+							} else if (i === to) {
+								stem_curve = stem_to_curve;
+							}
 						}
 					}
 					// toggle adjusted weight to interpolated
@@ -1270,7 +1280,7 @@ let axis = {
 					// save interpolated position and stem for visualization calculation
 					axis.weights.visible[i].setAttribute('data-position-interpolated', position);
 					axis.weights.visible[i].setAttribute('data-stem-interpolated', stem);
-					// save curved stem for drawing correct graph
+					// get curved stem (for drawing graph of stems growth curve) for progression with intermediate masters
 					if (axis.progressions.active > 1 && axis.weights.masters.length >= 3) {
 						stem_curve = Math.round(stem_curve * 100) / 100;
 						axis.weights.visible[i].setAttribute('data-stem-curve', stem_curve);
@@ -2081,7 +2091,7 @@ let axis = {
 			let graph_array = [];
 			let position_first = Number(axis.weights.visible[0].querySelector('.weight-position').value);
 			let position_last = Number(axis.weights.visible[axis.weights.visible.length - 1].querySelector('.weight-position').value);
-			let gather_data = function(from, to, segment) {
+			let gather_data = function(from, to, intermediatemasters) {
 				let position_from = Number(axis.weights.visible[from].querySelector('.weight-position').value);
 				let position_to = Number(axis.weights.visible[to].querySelector('.weight-position').value);
 				let percent_from = ((position_from - position_first) * 100) / (position_last - position_first);
@@ -2090,53 +2100,57 @@ let axis = {
 					if (!graph_array.length || (graph_array.length && (i !== graph_array[graph_array.length - 1].index))) {
 						let position = Number(axis.weights.visible[i].querySelector('.weight-position').value);
 						let percent_equal = ((i - from) * 100) / (to - from);
-						// correct for progression with intermediate master
-						if (segment) {
+						// correct the percent for progression with intermediate masters
+						if (intermediatemasters) {
 							percent_equal = percent_from + (percent_equal * (percent_to - percent_from)) / 100;
 						}
 						percent_equal = Math.round(percent_equal * 1000) / 1000;
 						let percent_current = ((position - position_first) * 100) / (position_last - position_first);
 						let stem_equal = percent_equal;
 						let stem_current;
-						if (axis.progressions.active > 1 && axis.weights.masters.length >= 3 && axis.weights.visible[i].hasAttribute('data-stem-curve')) {
+						// get curved stems for progression with intermediate masters
+						if (intermediatemasters && axis.weights.visible[i].hasAttribute('data-stem-curve')) {
 							stem_current = axis.weights.visible[i].getAttribute('data-stem-curve');
-						} else if (axis.progressions.active > 1 && axis.weights.visible[i].hasAttribute('data-stem-interpolated')) {
+						}
+						// get interpolated stems for progression with only two (extreme) masters
+						else if (axis.progressions.active > 1 && axis.weights.visible[i].hasAttribute('data-stem-interpolated')) {
 							stem_current = axis.weights.visible[i].getAttribute('data-stem-interpolated');
-						} else {
+						}
+						// get raw stem for equal steps interpolation
+						else {
 							stem_current = axis.weights.visible[i].querySelector('.weight-stem').value;
 						}
+						// save stems to array
 						if (stem_current.length) {
 							stem_current = ((Number(stem_current) - stem_thinnest) * 100) / (stem_thickest - stem_thinnest);
-						} else {
-							stem_current = 'unset';
-						}
-						if (stem_current !== 'unset' && stem_current >= 0 && position_to !== 0) {
-							stem_current = Math.round(stem_current * 1000) / 1000;
-							let graph_weight = {
-								index: i,
-								percent_equal: percent_equal,
-								percent_current: percent_current,
-								stem_equal: stem_equal,
-								stem_current: stem_current
-							};
-							graph_array.push(graph_weight);
+							if (stem_current >= 0 && position_to !== 0) {
+								stem_current = Math.round(stem_current * 1000) / 1000;
+								let graph_weight = {
+									index: i,
+									percent_equal: percent_equal,
+									percent_current: percent_current,
+									stem_equal: stem_equal,
+									stem_current: stem_current
+								};
+								graph_array.push(graph_weight);
+							}
 						}
 					}
 				}
 			};
 			
-			// progression with intermediate master
+			// progression with intermediate masters
 			if (axis.progressions.active > 1 && axis.weights.masters.length >= 3) {
 				for (let i = 0; i < axis.weights.masters.length - 1; i++) {
 					gather_data(axis.weights.masters[i], axis.weights.masters[i + 1], true);
 				}
 			}
-			// only extreme masters or equal or linear progression
+			// progression with only two extreme masters or equal steps interpolation
 			else {
 				gather_data(0, axis.weights.visible.length - 1, false);
 			}
 			
-			// find points
+			// find points and draw the graph
 			if (graph_array.length && axis.weights.masters.length >= 2) {
 				let points;
 				for (let i = 0; i < graph_array.length; i++) {
@@ -2147,7 +2161,9 @@ let axis = {
 					}
 					let position;
 					let stem;
+					// non-linear progression
 					if (axis.progressions.active > 1) {
+						// find intermediate weight position (and stem) between previous and next weight
 						if (i > 0 && i < (graph_array.length - 1)) {
 							let position_equal_prev;
 							let position_equal_next;
@@ -2166,11 +2182,15 @@ let axis = {
 							let position_percent = ((graph_array[i].percent_current - position_equal_prev) * 100) / (position_equal_next - position_equal_prev);
 							position = graph_array[i].percent_current;
 							stem = ((position_percent * (stem_current_next - stem_current_prev)) / 100) + stem_current_prev;
-						} else {
+						}
+						// use raw position and stem for extreme weights
+						else {
 							position = graph_array[i].percent_equal;
 							stem = graph_array[i].stem_equal;
 						}
-					} else {
+					}
+					// use raw position and stem for equal steps interpolation or linear interpolation
+					else {
 						position = graph_array[i].percent_current;
 						stem = graph_array[i].stem_current;
 					}
@@ -2178,6 +2198,7 @@ let axis = {
 					if (i < (graph_array.length - 1)) {
 						points += ' ';
 					}
+					// update handle vertical position
 					let handle = axis.weights.visible[graph_array[i].index].querySelector('.weight-handle');
 					handle.style.bottom = (Math.round(((stem * 0.7692) + 11.54) * 100) / 100) + '%';
 				}
@@ -2189,6 +2210,7 @@ let axis = {
 				// clear graph
 				axis.graph.path.setAttributeNS(null, 'd', '');
 			}
+			
 			// show or hide handles
 			for (let i = 0; i < axis.weights.visible.length; i++) {
 				let stem = axis.weights.visible[i].querySelector('.weight-stem').value;
