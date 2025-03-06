@@ -249,6 +249,7 @@ body {
 }
 .weight-master {
 	position: relative;
+	width: 100%;
 	margin-bottom: 22px;
 	cursor: pointer;
 	-webkit-transition: color .1s;
