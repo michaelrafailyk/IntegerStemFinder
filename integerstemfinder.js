@@ -1,6 +1,6 @@
 /*
 
-	IntegerStemFinder v1.0.13
+	IntegerStemFinder v1.0.14
 	Licensed under the MIT License
 	Developed by Michael Rafailyk in 2025
 	https://github.com/michaelrafailyk/IntegerStemFinder
@@ -325,7 +325,35 @@ let axis = {
 			// master
 			// toggle instance to master and vice versa
 			let master = axis.weights.all[i].querySelector('.weight-master');
+			if (!('ontouchstart' in document.documentElement)) {
+				// show tips on hover
+				master.addEventListener('mouseenter', function() {
+					if (axis.weights.all[i].classList.contains('master')) {
+						if (!master.classList.contains('master-to-instance')) {
+							master.classList.add('master-to-instance');
+						}
+					} else {
+						if (!master.classList.contains('instance-to-master')) {
+							master.classList.add('instance-to-master');
+						}
+					}
+				});
+				// hide tips
+				master.addEventListener('mouseleave', function() {
+					if (master.classList.contains('master-to-instance')) {
+						master.classList.remove('master-to-instance');
+					} else if (master.classList.contains('instance-to-master')) {
+						master.classList.remove('instance-to-master');
+					}
+				});
+			}
 			master.addEventListener('click', function() {
+				// hide tips
+				if (master.classList.contains('master-to-instance')) {
+					master.classList.remove('master-to-instance');
+				} else if (master.classList.contains('instance-to-master')) {
+					master.classList.remove('instance-to-master');
+				}
 				// make master
 				if (!axis.weights.all[i].classList.contains('master')) {
 					axis.weights.all[i].classList.remove('instance');

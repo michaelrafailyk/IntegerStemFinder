@@ -259,6 +259,15 @@ body {
 	position: relative;
 	white-space: nowrap;
 }
+.master .weight-master::after {
+	content: "Master";
+}
+.weight-master.instance-to-master::after {
+	content: "Master";
+}
+.weight-master.master-to-instance::after {
+	content: "Instance";
+}
 .weight label {
 	display: block;
 	position: relative;
@@ -615,9 +624,6 @@ body {
 .master .weight-stem-minus,
 .master .weight-stem-plus {
 	display: none;
-}
-.master .weight-master::after {
-	content: "Master";
 }
 
 /* instance color */
