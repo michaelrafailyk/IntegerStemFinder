@@ -70,6 +70,12 @@ body {
 	-webkit-transition: color .1s;
 	transition: color .1s;
 }
+.progression-linear:hover {
+	cursor: default;
+}
+.progression-linear.progression-active:hover {
+	cursor: pointer;
+}
 .rounded {
 	position: absolute;
 	left: 5px;
@@ -576,7 +582,6 @@ body {
 
 /* master (and hover) color */
 .progression:hover,
-.progression-linear:hover,
 .progression-active,
 .rounded:hover,
 .rounded-active,
