@@ -60,7 +60,7 @@ body {
 .progressions {
 	position: absolute;
 	left: 5px;
-	top: 135px;
+	top: 144px;
 	text-align: left;
 }
 .progression,
@@ -69,12 +69,6 @@ body {
 	cursor: pointer;
 	-webkit-transition: color .1s;
 	transition: color .1s;
-}
-.progression-linear:hover {
-	cursor: default;
-}
-.progression-linear.progression-active:hover {
-	cursor: pointer;
 }
 .rounded {
 	position: absolute;
@@ -88,7 +82,7 @@ body {
 .sets {
 	position: absolute;
 	right: 5px;
-	top: 135px;
+	top: 144px;
 	text-align: right;
 	white-space: nowrap;
 }
@@ -582,6 +576,7 @@ body {
 
 /* master (and hover) color */
 .progression:hover,
+.progression-linear:hover,
 .progression-active,
 .rounded:hover,
 .rounded-active,

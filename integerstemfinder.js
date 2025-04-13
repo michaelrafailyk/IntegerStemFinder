@@ -1,6 +1,6 @@
 /*
 
-	IntegerStemFinder v1.0.14
+	IntegerStemFinder v1.0.15
 	Licensed under the MIT License
 	Developed by Michael Rafailyk in 2025
 	https://github.com/michaelrafailyk/IntegerStemFinder
@@ -248,7 +248,6 @@ let axis = {
 				if (stem.value !== stem.getAttribute('data-stem-lastknown')) {
 					// master – interpolate
 					if (axis.weights.all[i].classList.contains('master')) {
-						axis.progressions.equalchecker();
 						axis.interpolation.linear();
 					}
 					// instance – adjust
@@ -445,9 +444,18 @@ let axis = {
 							handle.classList.add('weight-handle-hidden');
 						}
 					}
+					// highlight or unhighlight the Linear button
+					if (axis.weights.masters.length) {
+						if (!axis.progressions.linear.classList.contains('progression-active')) {
+							axis.progressions.linear.classList.add('progression-active');
+						}
+					} else {
+						if (axis.progressions.linear.classList.contains('progression-active')) {
+							axis.progressions.linear.classList.remove('progression-active');
+						}
+					}
 				}
 				axis.onlyextrememasters();
-				axis.progressions.equalchecker();
 				axis.interpolation.linear();
 			});
 			// set masters specified in defaults
@@ -769,6 +777,7 @@ let axis = {
 		
 		linear: function() {
 			// when moving master
+			// this is a linear interpolation without any progression
 			
 			// interpolate if at least one master is visible
 			if (!axis.weights.masters.length) {
@@ -1017,7 +1026,6 @@ let axis = {
 			
 			// find a range of instances between each pairs of masters, as well as before first and after last master
 			// first and/or last weights are masters
-			// perhaps this case should be redirected to Equal interpolation at the beginning of this function
 			if (axis.weights.onlyextrememasters) {
 				between_masters(0, axis.weights.visible.length - 1);
 			}
@@ -1072,14 +1080,13 @@ let axis = {
 			
 		}
 		
-	// interpolation end
+	// linear interpolation end
 	},
 
 
 
 	progressions: {
-		// for extreme masters interpolation
-		// the steps could be equal or exponentally increasing
+		// for exponentally increasing step interpolation
 		
 		formula: {
 			equal: function(t, b, s, x) {
@@ -1114,9 +1121,7 @@ let axis = {
 				stem_last = Number(stem_last);
 				// if thinnest and thickest stems are not equal
 				if (stem_first !== stem_last) {
-					// more freedom for Equal progression
-					// restrict all the other progressions
-					if (progression === 'equal' || (stem_first < stem_last && stem_first > 0 && stem_last > 0)) {
+					if (stem_first < stem_last && stem_first > 0 && stem_last > 0) {
 						access = true;
 					}
 				}
@@ -1141,21 +1146,15 @@ let axis = {
 			for (let i = 1; i < axis.weights.visible.length - 1; i++) {
 				if (axis.weights.visible[i].classList.contains('master')) {
 					let master_access = true;
-					// progression is Equal
-					if (progression === 'equal') {
-						master_access = false;
-					}
-					// no stem set or stem is out of range between first and last masters stems
-					else {
-						let stem = axis.weights.visible[i].querySelector('.weight-stem').value;
-						if (stem.length) {
-							stem = Number(stem);
-							if (stem <= stem_first || stem >= stem_last) {
-								master_access = false;
-							}
-						} else {
+					// if no stem set or stem is out of range between first and last masters stems
+					let stem = axis.weights.visible[i].querySelector('.weight-stem').value;
+					if (stem.length) {
+						stem = Number(stem);
+						if (stem <= stem_first || stem >= stem_last) {
 							master_access = false;
 						}
+					} else {
+						master_access = false;
 					}
 					// turn master to instance
 					if (!master_access) {
@@ -1180,9 +1179,7 @@ let axis = {
 			let build_stems = function() {
 				let steps = axis.weights.visible.length;
 				for (let i = 0; i < axis.weights.visible.length; i++) {
-					if (progression == 'equal') {
-						stem = axis.progressions.formula.equal(stem_first, stem_last, steps, i + 1);
-					} else if (progression == 'impallari') {
+					if (progression == 'impallari') {
 						stem = axis.progressions.formula.impallari(stem_first, stem_last, steps, i + 1);
 					} else if (progression == 'schneider') {
 						stem = axis.progressions.formula.schneider(stem_first, stem_last, steps, i + 1);
@@ -1195,7 +1192,7 @@ let axis = {
 				}
 			};
 			
-			// interpolate progression between every pair of masters
+			// calculate between every pair of masters
 			let between_masters = function(from, to) {
 				let percent;
 				let position_from = Number(axis.weights.visible[from].querySelector('.weight-position').value);
@@ -1243,7 +1240,7 @@ let axis = {
 					// intermediate weights
 					if (i > from && i < to) {
 						// get stem from builded array
-						if (progression == 'equal' || axis.weights.onlyextrememasters) {
+						if (axis.weights.onlyextrememasters) {
 							stem = stems[i];
 						}
 						// additionally correct stem if there are intermediate masters
@@ -1371,33 +1368,6 @@ let axis = {
 			}
 		},
 		
-		equalchecker: function() {
-			// highlight or unhighlight Linear or Equal button
-			if (axis.weights.masters.length) {
-				let stem_first = axis.weights.visible[0].querySelector('.weight-stem').value;
-				let stem_last = axis.weights.visible[axis.weights.visible.length - 1].querySelector('.weight-stem').value;
-				// activate Equal progression if only extreme weights are masters
-				if (!axis.progressions.active && axis.weights.onlyextrememasters && stem_first.length && stem_last.length) {
-					for (let i = 0; i < axis.progressions.buttons.length; i++) {
-						if (axis.progressions.buttons[i].getAttribute('data') == 'equal') {
-							axis.progressions.highlight(i);
-						}
-					}
-				}
-				// highlight Linear button if at least one weight is master
-				else if (!axis.progressions.active && !axis.progressions.linear.classList.contains('progression-active')) {
-					axis.progressions.linear.classList.add('progression-active');
-				}
-			}
-			// all weights are instances
-			else {
-				axis.progressions.active = false;
-				if (axis.progressions.linear.classList.contains('progression-active')) {
-					axis.progressions.linear.classList.remove('progression-active');
-				}
-			}
-		},
-		
 		readinesschecker: function(action, id) {
 			// it happens when the cursor is over the progression button (hover)
 			// check if stems are set for extreme weights, and if not – highlight them with a color
@@ -1460,15 +1430,10 @@ let axis = {
 		},
 		
 		setup: function() {
-			// turn off any active progression
+			// switch from progression to linear interpolation
 			axis.progressions.linear.addEventListener('click', function() {
 				axis.progressions.highlight();
-				axis.progressions.equalchecker();
-				if (axis.progressions.active && axis.weights.onlyextrememasters) {
-					axis.progressions.apply('equal');
-				} else {
-					axis.interpolation.linear();
-				}
+				axis.interpolation.linear();
 			});
 			// activate the progression
 			for (let i = 0; i < axis.progressions.buttons.length; i++) {
@@ -1489,14 +1454,6 @@ let axis = {
 					axis.progressions.buttons[i].addEventListener('mouseleave', function() {
 						axis.progressions.readinesschecker('clear');
 					});
-				}
-			}
-			// activate equal progression after page loading if only extreme weights are masters by default
-			axis.progressions.equalchecker();
-			// highlight the Linear button if axis.weights.defaults doesn't have two extreme visible masters set, with stems values specified
-			if (!axis.progressions.active) {
-				if (!axis.progressions.linear.classList.contains('progression-active')) {
-					axis.progressions.linear.classList.add('progression-active');
 				}
 			}
 		}
@@ -2231,7 +2188,7 @@ let axis = {
 							stem = graph_array[i].stem;
 						}
 					}
-					// equal steps interpolation or linear interpolation – use current position and stem
+					// linear interpolation – use current position and stem
 					else {
 						position = graph_array[i].percent_current;
 						stem = graph_array[i].stem;
@@ -2284,7 +2241,7 @@ let axis = {
 		// saving set you save an imprints of axis state
 		// count of sets is limited by count of its labels
 		
-		labels: ['Alpha', 'Beta', 'Gamma', 'Delta', 'Epsilon', 'Zeta'],
+		labels: ['Alpha', 'Beta', 'Gamma', 'Delta', 'Epsilon'],
 		
 		elements: {
 			list: document.querySelector('.sets-list'),
@@ -2527,6 +2484,13 @@ let axis = {
 				} else {
 					weight_sidebearing.disabled = false;
 					weight_sidebearing.parentElement.classList.remove('weight-stemsidebearing-hidden');
+				}
+			}
+			// update list of masters
+			axis.weights.masters = [];
+			for (let j = 0; j < axis.weights.visible.length; j++) {
+				if (axis.weights.visible[j].classList.contains('master')) {
+					axis.weights.masters.push(j);
 				}
 			}
 			// highlight the progression button

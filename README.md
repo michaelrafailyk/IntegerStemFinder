@@ -22,7 +22,6 @@ The idea of editable instances is inspired by a [comment of Abraham Lee](https:/
 
 - Interpolate from master to master (`Linear`) with a multiple masters option. Stems or sidebearings are not required, but if set, they can contain any numerical value (positive, zero, negative).
 - Extrapolate outside of masters (`Linear`) with a multiple masters option. If the extrapolated instances do not fit on the axis, the extrapolated segments will be limited to the extreme axis position (as if there is an invisible master). Axis range is from 0 to 1000.
-- Interpolate with equal steps between all weights (`Equal`). For extreme masters with any stems set (positive, zero, negative).
 - Interpolate with a progression (`Impallari`, `Schneider`, `Luc(as)`, `Abraham`) with a multiple masters option. Extreme masters should have stems with positive values. Last master stem should be bigger of the first master stem. If intermediate master stem is out of extreme masters stems range, this master will be turned to instance.
 
 - Adjust the instance position after interpolation. Interpolated instances are green, and adjusted instances are blue.
