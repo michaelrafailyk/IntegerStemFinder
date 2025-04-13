@@ -1,6 +1,6 @@
 /*
 
-	IntegerStemFinder v1.0.15
+	IntegerStemFinder v1.0.16
 	Licensed under the MIT License
 	Developed by Michael Rafailyk in 2025
 	https://github.com/michaelrafailyk/IntegerStemFinder
@@ -390,11 +390,6 @@ let axis = {
 				for (let j = 0; j < axis.weights.visible.length; j++) {
 					if (axis.weights.visible[j].classList.contains('master')) {
 						axis.weights.masters.push(j);
-					}
-				}
-				if (axis.weights.masters.length > 2) {
-					if (axis.progressions.active === 1) {
-						axis.progressions.highlight();
 					}
 				}
 				// if there are less than two masters
@@ -1211,7 +1206,7 @@ let axis = {
 				let stem_from_curve = stem_from;
 				let stem_to_curve = stem_to;
 				let stem_curve;
-				if (axis.progressions.active > 1 && axis.weights.masters.length >= 3) {
+				if (axis.progressions.active > 0 && axis.weights.masters.length >= 3) {
 					// from master is not the first one
 					if (from !== 0) {
 						let percent_equal = (from * 100) / (axis.weights.visible.length - 1);
@@ -1253,7 +1248,7 @@ let axis = {
 							// calculate new stem using interpolated percent
 							stem = stem_from + ((stem_interpolated_percent * (stem_to - stem_from)) / 100);
 							// calculate curved stem (for drawing graph of stems growth curve) for progression with intermediate masters
-							if (axis.progressions.active > 1 && axis.weights.masters.length >= 3) {
+							if (axis.progressions.active > 0 && axis.weights.masters.length >= 3) {
 								stem_curve = stem_from_curve + ((stem_interpolated_percent * (stem_to_curve - stem_from_curve)) / 100);
 							}
 						}
@@ -1290,7 +1285,7 @@ let axis = {
 						position = axis.weights.visible[i].querySelector('.weight-position').value;
 						stem = axis.weights.visible[i].querySelector('.weight-stem').value;
 						// get curved stem (for drawing graph of stems growth curve) for progression with intermediate masters
-						if (axis.progressions.active > 1 && axis.weights.masters.length >= 3) {
+						if (axis.progressions.active > 0 && axis.weights.masters.length >= 3) {
 							if (i === from) {
 								stem_curve = stem_from_curve;
 							} else if (i === to) {
@@ -1306,7 +1301,7 @@ let axis = {
 					axis.weights.visible[i].setAttribute('data-position-interpolated', position);
 					axis.weights.visible[i].setAttribute('data-stem-interpolated', stem);
 					// save curved stem (for drawing graph of stems growth curve) for progression with intermediate masters
-					if (axis.progressions.active > 1 && axis.weights.masters.length >= 3) {
+					if (axis.progressions.active > 0 && axis.weights.masters.length >= 3) {
 						stem_curve = Math.round(stem_curve * 100) / 100;
 						axis.weights.visible[i].setAttribute('data-stem-curve', stem_curve);
 					} else {
@@ -2104,7 +2099,7 @@ let axis = {
 							stem = axis.weights.visible[i].getAttribute('data-stem-curve');
 						}
 						// get interpolated stems for progression with only two (extreme) masters
-						else if (axis.progressions.active > 1 && axis.weights.visible[i].hasAttribute('data-stem-interpolated')) {
+						else if (axis.progressions.active > 0 && axis.weights.visible[i].hasAttribute('data-stem-interpolated')) {
 							stem = axis.weights.visible[i].getAttribute('data-stem-interpolated');
 						}
 						// get current stem for equal steps interpolation
@@ -2131,7 +2126,7 @@ let axis = {
 			};
 			
 			// progression with intermediate masters
-			if (axis.progressions.active > 1 && axis.weights.masters.length >= 3) {
+			if (axis.progressions.active > 0 && axis.weights.masters.length >= 3) {
 				for (let i = 0; i < axis.weights.masters.length - 1; i++) {
 					gather_data(axis.weights.masters[i], axis.weights.masters[i + 1], true);
 				}
@@ -2153,7 +2148,7 @@ let axis = {
 					let position;
 					let stem;
 					// non-linear progression
-					if (axis.progressions.active > 1) {
+					if (axis.progressions.active > 0) {
 						// intermediate weights
 						if (i > 0 && i < (graph_array.length - 1)) {
 							// intermediate instances – find average position and stem between previous and next weight
