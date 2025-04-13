@@ -12,7 +12,7 @@ Video demonstration: [youtube.com/watch?v=ei9jeOwSu30](https://www.youtube.com/w
 
 ## Preview
 
-![IntegerStemFinder preview](https://repository-images.githubusercontent.com/934969198/abf0088e-cb03-42b8-ac37-161c39ae2aa9)
+![IntegerStemFinder preview](https://repository-images.githubusercontent.com/934969198/4c6e4ea5-8e03-41e8-90ba-0e954f51e240)
 
 ## Sources
 
