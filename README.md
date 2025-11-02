@@ -1,4 +1,4 @@
-## IntegerStemFinder
+# IntegerStemFinder
 
 A tool for planning weight interpolation or extrapolation, with the ability to adjust instances after interpolation and to easily find the closest integer (or closest to integer) stem or sidebearing. Features: interpolate and extrapolate; switch any weight to master; hide any weight from axis; drag the weight to change its position; adjust instance after interpolation; find a closest integer stem or sidebearing; switch between accurate and rounded values; see a visualization of stems and sidebearings; compare interpolation strategies using sets.
 
@@ -64,3 +64,9 @@ defaults: [
 - Green – instance
 - Blue – adjusted instance
 - Gray – hidden weight
+
+## Donate
+
+This tool is free to use. If it saves you time or makes your work easier, consider supporting my work:
+
+[Ko-fi](https://ko-fi.com/michaelrafailyk), [PayPal](https://www.paypal.com/donate/?hosted_button_id=NF99TTG7WLHZS)
