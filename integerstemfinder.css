@@ -727,6 +727,32 @@ body {
 	color: #dd292f;
 }
 
+/* donate section */
+.donate {
+	position: relative;
+	margin: 0 auto 0 auto;
+	width: 300px;
+	padding-bottom: 15px;
+	text-align: center;
+	color: #bbbbbb;
+}
+.donate-links {
+	margin: 8px 0 5px 0;
+}
+.donate-links a {
+	display: inline-block;
+	margin: 0 2px 0 2px;
+	padding: 4px 6px;
+	border-radius: 5px;
+	background: #eeeeee;
+	color: #aaaaaa;
+	white-space: nowrap;
+}
+.donate-links a:hover {
+	background: #dddddd;
+	color: #222222;
+}
+
 
 
 /* limit axis size on big screen and give it more space */
@@ -754,5 +780,13 @@ body {
 	}
 	.sets {
 		right: -10%;
+	}
+}
+@media (min-height: 800px) {
+	.donate {
+		position: absolute;
+		left: 50vw;
+		bottom: 0;
+		margin: 0 0 0 -150px;
 	}
 }
