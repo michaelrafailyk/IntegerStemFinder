@@ -727,27 +727,6 @@ body {
 	color: #dd292f;
 }
 
-/* donate section */
-.donate {
-	position: absolute;
-	left: 5px;
-	bottom: -100px;
-	width: 350px;
-	padding: 20px 0;
-	text-align: left;
-	color: #bbbbbb;
-}
-.donate a,
-.donate a:visited {
-	color: inherit;
-	font-weight: bold;
-	-webkit-transition: color .1s;
-	transition: color .1s;
-}
-.donate a:hover {
-	color: black;
-}
-
 
 
 /* limit axis size on big screen and give it more space */
@@ -770,16 +749,10 @@ body {
 }
 @media (min-width: 1660px) {
 	.progressions,
-	.rounded,
-	.donate {
+	.rounded {
 		left: -10%;
 	}
 	.sets {
 		right: -10%;
-	}
-}
-@media (min-height: 740px) {
-	.donate {
-		bottom: calc((540px - 100vh) / 2);
 	}
 }
