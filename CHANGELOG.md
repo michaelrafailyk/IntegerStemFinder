@@ -1,7 +1,6 @@
-## TODO for 1.3 (work in progress)
-- Avoid re-interpolation when disabling "Rounded".
-- Make "Rounded" button independable from sets.
-- Allow to rename sets (which defaults names are Alpha, Beta, Gamma, Delta, Epsilon).
+## 1.3
+- "Rounded" button now work correctly, without unnecessary re-interpolation after disabling rounding.
+- "Rounded" button now global and independent from saved sets state.
 
 ## 1.2
 - "Numeric" button added for switching between weight names and instance/master number.

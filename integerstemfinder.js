@@ -1,6 +1,6 @@
 /*
 
-	IntegerStemFinder v1.2
+	IntegerStemFinder v1.3
 	Licensed under the MIT License
 	Developed by Michael Rafailyk in 2025
 	https://github.com/michaelrafailyk/IntegerStemFinder
@@ -402,6 +402,8 @@ let axis = {
 						if (!axis.weights.all[j].classList.contains('master')) {
 							axis.weights.all[j].querySelector('.weight-stem').value = '';
 							axis.weights.all[j].querySelector('.weight-sidebearing').value = '';
+							axis.weights.all[j].querySelector('.weight-stem').removeAttribute('data-raw');
+							axis.weights.all[j].querySelector('.weight-sidebearing').removeAttribute('data-raw');
 							axis.weights.all[j].querySelector('.weight-stem').disabled = true;
 							axis.weights.all[j].querySelector('.weight-sidebearing').disabled = true;
 							axis.weights.all[j].querySelector('.weight-stem').parentElement.classList.add('weight-stemsidebearing-hidden');
@@ -614,7 +616,7 @@ let axis = {
 		}
 		
 		// numeric
-		// toggle weight names into numbers
+		// toggle weight names into number id of master/instance
 		let numeric = document.querySelector('.numeric');
 		let axis_element = document.querySelector('.axis');
 		numeric.addEventListener('click', function() {
@@ -636,22 +638,29 @@ let axis = {
 		// toggle stems and sidebearings numbers from more accurate decimals to rounded integer
 		let rounded = document.querySelector('.rounded');
 		rounded.addEventListener('click', function() {
-			// round – update the current values without interpolation
+			// get list of all stem and sidebearing inputs
+			let stems_sidebearings = document.querySelectorAll('.weight-stem, .weight-sidebearing');
+			// round
 			if (!rounded.classList.contains('rounded-active')) {
 				rounded.classList.add('rounded-active');
 				axis.weights.rounded = true;
-				let stems_sidebearings = document.querySelectorAll('.weight-stem, .weight-sidebearing');
 				for (let i = 0; i < stems_sidebearings.length; i++) {
 					if (stems_sidebearings[i].value.length) {
+						stems_sidebearings[i].setAttribute('data-raw', stems_sidebearings[i].value);
 						stems_sidebearings[i].value = Math.round(stems_sidebearings[i].value);
 					}
 				}
 			}
-			// unround – reinterpolate
+			// unround
 			else {
 				rounded.classList.remove('rounded-active');
 				axis.weights.rounded = false;
-				axis.interpolation.linear();
+				for (let i = 0; i < stems_sidebearings.length; i++) {
+					if (stems_sidebearings[i].value.length && stems_sidebearings[i].hasAttribute('data-raw')) {
+						stems_sidebearings[i].value = stems_sidebearings[i].getAttribute('data-raw');
+						stems_sidebearings[i].removeAttribute('data-raw');
+					}
+				}
 			}
 		});
 		
@@ -2295,6 +2304,12 @@ let axis = {
 					sidebearing: weight_sidebearing.value,
 					sidebearing_disabled: weight_sidebearing.disabled
 				}
+				if (weight_stem.hasAttribute('data-raw')) {
+					weight.stem_raw = weight_stem.getAttribute('data-raw');
+				}
+				if (weight_sidebearing.hasAttribute('data-raw')) {
+					weight.sidebearing_raw = weight_sidebearing.getAttribute('data-raw');
+				}
 				if (weight_element.hasAttribute('data-position-interpolated')) {
 					weight.position_interpolated = weight_element.getAttribute('data-position-interpolated');
 				}
@@ -2319,11 +2334,6 @@ let axis = {
 					set.progression = p + 1;
 					break;
 				}
-			}
-			if (axis.weights.rounded) {
-				set.rounded = true;
-			} else {
-				set.rounded = false;
 			}
 			return set;
 		},
@@ -2391,11 +2401,6 @@ let axis = {
 		},
 		
 		restoreset: function(index) {
-			// highlight or unhighlight rounded button
-			let rounded = document.querySelector('.rounded');
-			if ((axis.sets.list[index].rounded && !axis.weights.rounded) || (!axis.sets.list[index].rounded && axis.weights.rounded)) {
-				rounded.click();
-			}
 			// restore every value of every weight from set
 			for (let i = 0; i < axis.sets.list[index].weights.length; i++) {
 				let data = axis.sets.list[index].weights[i];
@@ -2478,16 +2483,35 @@ let axis = {
 				let sidebearing_value = data.sidebearing;
 				if (axis.weights.rounded) {
 					if (stem_value.length) {
+						weight_stem.setAttribute('data-raw', stem_value);
 						stem_value = Math.round(stem_value);
 					}
 					if (sidebearing_value.length) {
+						weight_sidebearing.setAttribute('data-raw', sidebearing_value);
 						sidebearing_value = Math.round(sidebearing_value);
+					}
+				} else {
+					if (data.stem_raw) {
+						stem_value = data.stem_raw;
+					}
+					if (data.sidebearing_raw) {
+						sidebearing_value = data.sidebearing_raw;
 					}
 				}
 				weight.style.left = data.percent + '%';
 				weight_position.value = data.position;
 				weight_stem.value = stem_value;
 				weight_sidebearing.value = sidebearing_value;
+				if (data.stem_raw) {
+					weight_stem.setAttribute('data-raw', data.stem_raw);
+				} else {
+					weight_stem.removeAttribute('data-raw');
+				}
+				if (data.sidebearing_raw) {
+					weight_sidebearing.setAttribute('data-raw', data.sidebearing_raw);
+				} else {
+					weight_sidebearing.removeAttribute('data-raw');
+				}
 				if (data.stem_disabled) {
 					weight_stem.disabled = true;
 					weight_stem.parentElement.classList.add('weight-stemsidebearing-hidden');
