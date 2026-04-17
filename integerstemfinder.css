@@ -70,6 +70,15 @@ body {
 	-webkit-transition: color .1s;
 	transition: color .1s;
 }
+.numeric {
+	position: absolute;
+	left: 5px;
+	top: 0;
+	text-align: left;
+	cursor: pointer;
+	-webkit-transition: color .1s;
+	transition: color .1s;
+}
 .rounded {
 	position: absolute;
 	left: 5px;
@@ -246,6 +255,18 @@ body {
 	font-weight: bold;
 	white-space: nowrap;
 	background: white;
+}
+.weight-name-text {
+	display: block;
+}
+.weight-name-number {
+	display: none;
+}
+.axis-numeric .weight-name-text {
+	display: none;
+}
+.axis-numeric .weight-name-number {
+	display: block;
 }
 .weight-master {
 	position: relative;
@@ -563,6 +584,7 @@ body {
 
 /* colors */
 .progressions,
+.numeric,
 .rounded,
 .sets {
 	color: #bbbbbb;
@@ -578,6 +600,8 @@ body {
 .progression:hover,
 .progression-linear:hover,
 .progression-active,
+.numeric:hover,
+.numeric-active,
 .rounded:hover,
 .rounded-active,
 .set-name:hover,
@@ -749,6 +773,7 @@ body {
 }
 @media (min-width: 1660px) {
 	.progressions,
+	.numeric,
 	.rounded {
 		left: -10%;
 	}

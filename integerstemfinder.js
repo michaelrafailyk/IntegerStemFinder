@@ -1,6 +1,6 @@
 /*
 
-	IntegerStemFinder v1.0.16
+	IntegerStemFinder v1.2
 	Licensed under the MIT License
 	Developed by Michael Rafailyk in 2025
 	https://github.com/michaelrafailyk/IntegerStemFinder
@@ -29,6 +29,7 @@ let axis = {
 		router: {},
 		masters: [],
 		onlyextrememasters: false,
+		numeric: false,
 		rounded: false
 	},
 
@@ -59,11 +60,13 @@ let axis = {
 			
 			// defaults
 			// set default values
-			let name = axis.weights.all[i].querySelector('.weight-name');
+			let name = axis.weights.all[i].querySelector('.weight-name-text');
+			let numb = axis.weights.all[i].querySelector('.weight-name-number');
 			let position = axis.weights.all[i].querySelector('.weight-position');
 			let stem = axis.weights.all[i].querySelector('.weight-stem');
 			let sidebearing = axis.weights.all[i].querySelector('.weight-sidebearing');
 			name.textContent = axis.weights.defaults[i].name;
+			numb.textContent = i + 1;
 			axis.weights.all[i].style.left = axis.weights.defaults[i].position / 10 + '%';
 			position.value = axis.weights.defaults[i].position;
 			if (axis.weights.defaults[i].master && axis.weights.defaults[i].stem) {
@@ -609,6 +612,25 @@ let axis = {
 				}
 			});
 		}
+		
+		// numeric
+		// toggle weight names into numbers
+		let numeric = document.querySelector('.numeric');
+		let axis_element = document.querySelector('.axis');
+		numeric.addEventListener('click', function() {
+			// switch to number labels
+			if (!numeric.classList.contains('numeric-active')) {
+				axis_element.classList.add('axis-numeric');
+				numeric.classList.add('numeric-active');
+				axis.weights.numeric = true;
+			}
+			// switch to text labels
+			else {
+				axis_element.classList.remove('axis-numeric');
+				numeric.classList.remove('numeric-active');
+				axis.weights.numeric = false;
+			}
+		});
 		
 		// rounded
 		// toggle stems and sidebearings numbers from more accurate decimals to rounded integer
