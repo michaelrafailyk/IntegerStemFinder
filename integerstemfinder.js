@@ -1,6 +1,6 @@
 /*
 
-	IntegerStemFinder v1.3
+	IntegerStemFinder v1.3.1
 	Licensed under the MIT License
 	Developed by Michael Rafailyk in 2025
 	https://github.com/michaelrafailyk/IntegerStemFinder
@@ -71,9 +71,11 @@ let axis = {
 			position.value = axis.weights.defaults[i].position;
 			if (axis.weights.defaults[i].master && axis.weights.defaults[i].stem) {
 				stem.value = axis.weights.defaults[i].stem;
+				stem.setAttribute('data-raw', stem.value);
 			}
 			if (axis.weights.defaults[i].master && axis.weights.defaults[i].sidebearing) {
 				sidebearing.value = axis.weights.defaults[i].sidebearing;
+				sidebearing.setAttribute('data-raw', sidebearing.value);
 			}
 			
 			// position
@@ -401,8 +403,8 @@ let axis = {
 					for (let j = 0; j < axis.weights.all.length; j++) {
 						if (!axis.weights.all[j].classList.contains('master')) {
 							axis.weights.all[j].querySelector('.weight-stem').value = '';
-							axis.weights.all[j].querySelector('.weight-sidebearing').value = '';
 							axis.weights.all[j].querySelector('.weight-stem').removeAttribute('data-raw');
+							axis.weights.all[j].querySelector('.weight-sidebearing').value = '';
 							axis.weights.all[j].querySelector('.weight-sidebearing').removeAttribute('data-raw');
 							axis.weights.all[j].querySelector('.weight-stem').disabled = true;
 							axis.weights.all[j].querySelector('.weight-sidebearing').disabled = true;
@@ -497,7 +499,9 @@ let axis = {
 						axis.weights.all[i].style.left = (axis.weights.defaults[i].position / 10) + '%';
 						axis.weights.all[i].querySelector('.weight-position').value = axis.weights.defaults[i].position;
 						axis.weights.all[i].querySelector('.weight-stem').value = '';
+						axis.weights.all[i].querySelector('.weight-stem').removeAttribute('data-raw');
 						axis.weights.all[i].querySelector('.weight-sidebearing').value = '';
+						axis.weights.all[i].querySelector('.weight-sidebearing').removeAttribute('data-raw');
 						if (axis.weights.all[i].hasAttribute('data-position-interpolated')) {
 							axis.weights.all[i].removeAttribute('data-position-interpolated');
 						}
@@ -832,10 +836,12 @@ let axis = {
 				let stem_to;
 				let stem_interpolate = false;
 				let stem_value = '';
+				let stem_value_raw = null;
 				let sidebearing_from;
 				let sidebearing_to;
 				let sidebearing_interpolate = false;
 				let sidebearing_value = '';
+				let sidebearing_value_raw = null;
 				if (axis.weights.visible[from].querySelector('.weight-stem').value.length && axis.weights.visible[to].querySelector('.weight-stem').value.length) {
 					stem_from = Number(axis.weights.visible[from].querySelector('.weight-stem').value);
 					stem_to = Number(axis.weights.visible[to].querySelector('.weight-stem').value);
@@ -855,12 +861,14 @@ let axis = {
 					let percent_corrected = ((position - (percent_from * 10)) * 100) / ((percent_to * 10) - (percent_from * 10));
 					if (stem_interpolate) {
 						stem_value = Math.round((stem_from + (((stem_to - stem_from) * percent_corrected) / 100)) * 100) / 100;
+						stem_value_raw = stem_value;
 						if (axis.weights.rounded) {
 							stem_value = Math.round(stem_value);
 						}
 					}
 					if (sidebearing_interpolate) {
 						sidebearing_value = Math.round((sidebearing_from + (((sidebearing_to - sidebearing_from) * percent_corrected) / 100)) * 100) / 100;
+						sidebearing_value_raw = sidebearing_value;
 						if (axis.weights.rounded) {
 							sidebearing_value = Math.round(sidebearing_value);
 						}
@@ -869,6 +877,16 @@ let axis = {
 					axis.weights.visible[i].querySelector('.weight-position').value = position;
 					axis.weights.visible[i].querySelector('.weight-stem').value = stem_value;
 					axis.weights.visible[i].querySelector('.weight-sidebearing').value = sidebearing_value;
+					if (stem_value_raw !== null) {
+						axis.weights.visible[i].querySelector('.weight-stem').setAttribute('data-raw', stem_value_raw);
+					} else {
+						axis.weights.visible[i].querySelector('.weight-stem').removeAttribute('data-raw');
+					}
+					if (sidebearing_value_raw !== null) {
+						axis.weights.visible[i].querySelector('.weight-sidebearing').setAttribute('data-raw', sidebearing_value_raw);
+					} else {
+						axis.weights.visible[i].querySelector('.weight-sidebearing').removeAttribute('data-raw');
+					}
 				}
 			};
 			
@@ -891,11 +909,13 @@ let axis = {
 				let stem_next_master;
 				let stem_interpolate = false;
 				let stem_value = '';
+				let stem_value_raw = null;
 				let sidebearing_from;
 				let sidebearing_to;
 				let sidebearing_next_master;
 				let sidebearing_interpolate = false;
 				let sidebearing_value = '';
+				let sidebearing_value_raw = null;
 				if (axis.weights.visible[to].querySelector('.weight-stem').value.length && axis.weights.visible[next_master].querySelector('.weight-stem').value.length) {
 					stem_to = Number(axis.weights.visible[to].querySelector('.weight-stem').value);
 					stem_next_master = Number(axis.weights.visible[next_master].querySelector('.weight-stem').value);
@@ -918,12 +938,14 @@ let axis = {
 					}
 					if (stem_interpolate) {
 						stem_value = Math.round((stem_from + (((stem_to - stem_from) * percent_corrected) / 100)) * 100) / 100;
+						stem_value_raw = stem_value;
 						if (axis.weights.rounded) {
 							stem_value = Math.round(stem_value);
 						}
 					}
 					if (sidebearing_interpolate) {
 						sidebearing_value = Math.round((sidebearing_from + (((sidebearing_to - sidebearing_from) * percent_corrected) / 100)) * 100) / 100;
+						sidebearing_value_raw = sidebearing_value;
 						if (axis.weights.rounded) {
 							sidebearing_value = Math.round(sidebearing_value);
 						}
@@ -932,6 +954,16 @@ let axis = {
 					axis.weights.visible[i].querySelector('.weight-position').value = position;
 					axis.weights.visible[i].querySelector('.weight-stem').value = stem_value;
 					axis.weights.visible[i].querySelector('.weight-sidebearing').value = sidebearing_value;
+					if (stem_value_raw !== null) {
+						axis.weights.visible[i].querySelector('.weight-stem').setAttribute('data-raw', stem_value_raw);
+					} else {
+						axis.weights.visible[i].querySelector('.weight-stem').removeAttribute('data-raw');
+					}
+					if (sidebearing_value_raw !== null) {
+						axis.weights.visible[i].querySelector('.weight-sidebearing').setAttribute('data-raw', sidebearing_value_raw);
+					} else {
+						axis.weights.visible[i].querySelector('.weight-sidebearing').removeAttribute('data-raw');
+					}
 					// save extreme stem and sidebearing for the adjustment function calculation
 					// it's like one more invisible weight is there before the first visible weight
 					if (i === 0) {
@@ -980,11 +1012,13 @@ let axis = {
 				let stem_to;
 				let stem_interpolate = false;
 				let stem_value = '';
+				let stem_value_raw = null;
 				let sidebearing_prev_master;
 				let sidebearing_from;
 				let sidebearing_to;
 				let sidebearing_interpolate = false;
 				let sidebearing_value = '';
+				let sidebearing_value_raw = null;
 				if (axis.weights.visible[from].querySelector('.weight-stem').value.length && axis.weights.visible[prev_master].querySelector('.weight-stem').value.length) {
 					stem_from = Number(axis.weights.visible[from].querySelector('.weight-stem').value);
 					stem_prev_master = Number(axis.weights.visible[prev_master].querySelector('.weight-stem').value);
@@ -1007,12 +1041,14 @@ let axis = {
 					}
 					if (stem_interpolate) {
 						stem_value = Math.round((stem_from + (((stem_to - stem_from) * percent_corrected) / 100)) * 100) / 100;
+						stem_value_raw = stem_value;
 						if (axis.weights.rounded) {
 							stem_value = Math.round(stem_value);
 						}
 					}
 					if (sidebearing_interpolate) {
 						sidebearing_value = Math.round((sidebearing_from + (((sidebearing_to - sidebearing_from) * percent_corrected) / 100)) * 100) / 100;
+						sidebearing_value_raw = sidebearing_value;
 						if (axis.weights.rounded) {
 							sidebearing_value = Math.round(sidebearing_value);
 						}
@@ -1021,6 +1057,16 @@ let axis = {
 					axis.weights.visible[i].querySelector('.weight-position').value = position;
 					axis.weights.visible[i].querySelector('.weight-stem').value = stem_value;
 					axis.weights.visible[i].querySelector('.weight-sidebearing').value = sidebearing_value;
+					if (stem_value_raw !== null) {
+						axis.weights.visible[i].querySelector('.weight-stem').setAttribute('data-raw', stem_value_raw);
+					} else {
+						axis.weights.visible[i].querySelector('.weight-stem').removeAttribute('data-raw');
+					}
+					if (sidebearing_value_raw !== null) {
+						axis.weights.visible[i].querySelector('.weight-sidebearing').setAttribute('data-raw', sidebearing_value_raw);
+					} else {
+						axis.weights.visible[i].querySelector('.weight-sidebearing').removeAttribute('data-raw');
+					}
 					// save extreme stem and sidebearing for the adjustment function calculation
 					// it's like one more invisible weight is there after the last visible weight
 					if (i === (axis.weights.visible.length - 1)) {
@@ -1228,6 +1274,7 @@ let axis = {
 				let stem_from = axis.weights.visible[from].querySelector('.weight-stem').value;
 				let stem_to = axis.weights.visible[to].querySelector('.weight-stem').value;
 				let stem = '';
+				let stem_raw = null;
 				if (stem_from.length && stem_to.length) {
 					stem_from = Number(stem_from);
 					stem_to = Number(stem_to);
@@ -1256,6 +1303,7 @@ let axis = {
 				let sidebearing_from = axis.weights.visible[from].querySelector('.weight-sidebearing').value;
 				let sidebearing_to = axis.weights.visible[to].querySelector('.weight-sidebearing').value;
 				let sidebearing = '';
+				let sidebearing_raw = null;
 				if (sidebearing_from.length && sidebearing_to.length) {
 					sidebearing_from = Number(sidebearing_from);
 					sidebearing_to = Number(sidebearing_to);
@@ -1295,12 +1343,14 @@ let axis = {
 						position = Math.round(position);
 						percent = ((position - position_from) * 100) / (position_to - position_from);
 						stem = Math.round((stem_from + (((stem_to - stem_from) * percent) / 100)) * 100) / 100;
+						stem_raw = stem;
 						if (axis.weights.rounded) {
 							stem = Math.round(stem);
 						}
 						// calculate sidebearing if set
 						if (sidebearing !== '') {
 							sidebearing = Math.round((sidebearing_from + (((sidebearing_to - sidebearing_from) * percent) / 100)) * 100) / 100;
+							sidebearing_raw = sidebearing;
 							if (axis.weights.rounded) {
 								sidebearing = Math.round(sidebearing);
 							}
@@ -1310,6 +1360,16 @@ let axis = {
 						axis.weights.visible[i].querySelector('.weight-position').value = position;
 						axis.weights.visible[i].querySelector('.weight-stem').value = stem;
 						axis.weights.visible[i].querySelector('.weight-sidebearing').value = sidebearing;
+						if (stem_raw !== null) {
+							axis.weights.visible[i].querySelector('.weight-stem').setAttribute('data-raw', stem_raw);
+						} else {
+							axis.weights.visible[i].querySelector('.weight-stem').removeAttribute('data-raw');
+						}
+						if (sidebearing_raw !== null) {
+							axis.weights.visible[i].querySelector('.weight-sidebearing').setAttribute('data-raw', sidebearing_raw);
+						} else {
+							axis.weights.visible[i].querySelector('.weight-sidebearing').removeAttribute('data-raw');
+						}
 					}
 					// extreme masters
 					else {
@@ -1527,20 +1587,28 @@ let axis = {
 				let stem_to = Number(axis.weights.visible[weight_to].querySelector('.weight-stem').value);
 				let stem_value = ((percent_between * (stem_to - stem_from)) / 100) + stem_from;
 				stem_value = Math.round((stem_value) * 100) / 100;
+				let stem_value_raw = stem_value;
 				if (axis.weights.rounded) {
 					stem_value = Math.round(stem_value);
 				}
 				stem.value = stem_value;
+				stem.setAttribute('data-raw', stem_value_raw);
+			} else {
+				stem.removeAttribute('data-raw');
 			}
 			if (sidebearing.value.length) {
 				let sidebearing_from = Number(axis.weights.visible[weight_from].querySelector('.weight-sidebearing').value);
 				let sidebearing_to = Number(axis.weights.visible[weight_to].querySelector('.weight-sidebearing').value);
 				let sidebearing_value = ((percent_between * (sidebearing_to - sidebearing_from)) / 100) + sidebearing_from;
 				sidebearing_value = Math.round((sidebearing_value) * 100) / 100;
+				let sidebearing_value_raw = sidebearing_value;
 				if (axis.weights.rounded) {
 					sidebearing_value = Math.round(sidebearing_value);
 				}
 				sidebearing.value = sidebearing_value;
+				sidebearing.setAttribute('data-raw', sidebearing_value_raw);
+			} else {
+				sidebearing.removeAttribute('data-raw');
 			}
 		}
 		
@@ -1600,6 +1668,7 @@ let axis = {
 		}
 		let main_target = Number(main_element.value);
 		let main_closest = main_old;
+		let main_closest_raw = null;
 		let main_temp;
 		let main_prev;
 		let main_next;
@@ -1609,6 +1678,7 @@ let axis = {
 			secondary_old = Number(secondary_element.value);
 		}
 		let secondary_new = 'unset';
+		let secondary_new_raw = null;
 		let secondary_prev;
 		let secondary_next;
 		
@@ -1814,6 +1884,7 @@ let axis = {
 		// correct weight percent between the closest weights according to new (integer) position
 		position_new_percent = ((position_new - position_prev) * 100) / (position_next - position_prev)
 		
+		main_closest_raw = main_closest;
 		if (axis.weights.rounded) {
 			main_closest = Math.round(main_closest);
 		}
@@ -1821,6 +1892,7 @@ let axis = {
 		// calculate new secondary attribute
 		if (secondary_old !== 'unset') {
 			secondary_new = Math.round((secondary_prev + ((position_new_percent * (secondary_next - secondary_prev)) / 100)) * 100) / 100;
+			secondary_new_raw = secondary_new;
 			if (axis.weights.rounded) {
 				secondary_new = Math.round(secondary_new);
 			}
@@ -1831,8 +1903,10 @@ let axis = {
 			axis.weights.visible[i].style.left = (position_new / 10) + '%';
 			position_element.value = position_new;
 			main_element.value = main_closest;
+			main_element.setAttribute('data-raw', main_closest_raw);
 			if (secondary_new !== 'unset') {
 				secondary_element.value = secondary_new;
+				secondary_element.setAttribute('data-raw', secondary_new_raw);
 			}
 			// highlight adjusted instance
 			if (position_new === position_interpolated) {
