@@ -1,3 +1,6 @@
+## 1.3.2
+- Remove deprecated `-webkit-` dependencies in CSS.
+
 ## 1.3
 - "Rounded" button now work correctly, without unnecessary re-interpolation after disabling rounding.
 - "Rounded" button now global and independent from saved sets state.

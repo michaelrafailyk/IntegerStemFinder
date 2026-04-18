@@ -16,12 +16,6 @@ body {
 	font-family: Helvetica, Arial, sans-serif;
 	font-size: 12px;
 	line-height: 1em;
-	-moz-font-feature-settings: 'kern';
-	-moz-osx-font-smoothing: grayscale;
-	-webkit-font-smoothing: antialiased;
-	-moz-user-select: none;
-	-webkit-user-select: none;
-	-ms-user-select: none;
 	user-select: none;
 }
 
@@ -29,7 +23,6 @@ body {
 
 .wrapper {
 	position: relative;
-	-webkit-box-sizing: border-box;
 	box-sizing: border-box;
 	width: 100%;
 	min-width: 960px;
@@ -67,7 +60,6 @@ body {
 .progression-linear {
 	margin-bottom: 4px;
 	cursor: pointer;
-	-webkit-transition: color .1s;
 	transition: color .1s;
 }
 .numeric {
@@ -76,7 +68,6 @@ body {
 	top: 0;
 	text-align: left;
 	cursor: pointer;
-	-webkit-transition: color .1s;
 	transition: color .1s;
 }
 .rounded {
@@ -85,7 +76,6 @@ body {
 	top: 283px;
 	text-align: left;
 	cursor: pointer;
-	-webkit-transition: color .1s;
 	transition: color .1s;
 }
 .sets {
@@ -101,7 +91,6 @@ body {
 	text-align: right;
 	padding-right: 16px;
 	cursor: pointer;
-	-webkit-transition: color .1s;
 	transition: color .1s;
 }
 .sets-save::before {
@@ -111,7 +100,6 @@ body {
 	top: 5px;
 	width: 8px;
 	height: 2px;
-	-webkit-transition: background .1s;
 	transition: background .1s;
 }
 .sets-save::after {
@@ -121,7 +109,6 @@ body {
 	top: 2px;
 	width: 2px;
 	height: 8px;
-	-webkit-transition: background .1s;
 	transition: background .1s;
 }
 .sets-save-hidden {
@@ -130,7 +117,6 @@ body {
 .set {
 	position: relative;
 	margin-bottom: 4px;
-	-webkit-transition: color .1s;
 	transition: color .1s;
 }
 .set-name {
@@ -149,7 +135,6 @@ body {
 	vertical-align: top;
 	width: 12px;
 	height: 12px;
-	-webkit-transform: translateX(-0.5px);
 	transform: translateX(-0.5px);
 	cursor: pointer;
 }
@@ -160,9 +145,7 @@ body {
 	top: 5px;
 	width: 9px;
 	height: 2px;
-	-webkit-transform: rotate(45deg);
 	transform: rotate(45deg);
-	-webkit-transition: background .1s;
 	transition: background .1s;
 }
 .set-remove::after {
@@ -172,9 +155,7 @@ body {
 	top: 5px;
 	width: 9px;
 	height: 2px;
-	-webkit-transform: rotate(-45deg);
 	transform: rotate(-45deg);
-	-webkit-transition: background .1s;
 	transition: background .1s;
 }
 .set-remove-label {
@@ -187,13 +168,9 @@ body {
 }
 .weight {
 	z-index: 2;
-	display: -webkit-flex;
 	display: flex;
-	-webkit-flex-direction: column;
 	flex-direction: column;
-	-webkit-justify-content: start;
 	justify-content: start;
-	-webkit-align-items: center;
 	align-items: center;
 	position: absolute;
 	left: 0;
@@ -203,13 +180,9 @@ body {
 	text-align: center;
 }
 .weight-section-one {
-	display: -webkit-flex;
 	display: flex;
-	-webkit-flex-direction: column;
 	flex-direction: column;
-	-webkit-justify-content: start;
 	justify-content: start;
-	-webkit-align-items: center;
 	align-items: center;
 	position: relative;
 	width: 50px;
@@ -226,13 +199,9 @@ body {
 	background: white;
 }
 .weight-section-two {
-	display: -webkit-flex;
 	display: flex;
-	-webkit-flex-direction: column;
 	flex-direction: column;
-	-webkit-justify-content: start;
 	justify-content: start;
-	-webkit-align-items: center;
 	align-items: center;
 	position: relative;
 	width: 50px;
@@ -273,7 +242,6 @@ body {
 	width: 100%;
 	margin-bottom: 22px;
 	cursor: pointer;
-	-webkit-transition: color .1s;
 	transition: color .1s;
 }
 .weight-master::after {
@@ -296,7 +264,6 @@ body {
 	margin-bottom: 8px;
 	text-align: center;
 	opacity: 1;
-	-webkit-transition: color .1s, opacity .1s;
 	transition: color .1s, opacity .1s;
 }
 .weight label.weight-stemsidebearing-hidden {
@@ -319,21 +286,14 @@ body {
 	text-align: center;
 	color: inherit;
 	background: white;
-	-webkit-transition: color .1s;
 	transition: color .1s;
-	-moz-appearance: none;
 	appearance: none;
-	-webkit-box-shadow: none;
 	box-shadow: none;
 	border-radius: 4px;
 	border: none;
 	outline: none;
 	text-decoration: none;
-	-moz-user-select: text;
-	-webkit-user-select: text;
-	-ms-user-select: text;
 	user-select: text;
-	-webkit-transition: background .1s;
 	transition: background .1s;
 }
 .weight input::placeholder {
@@ -354,7 +314,6 @@ body {
 	pointer-events: none;
 }
 .weight-controls {
-	-webkit-flex: 1;
 	flex: 1;
 	position: relative;
 	width: 20px;
@@ -484,7 +443,6 @@ body {
 	position: relative;
 	margin-top: 14px;
 	cursor: pointer;
-	-webkit-transition: color .1s;
 	transition: color .1s;
 }
 .weight-hide::after {
@@ -492,13 +450,9 @@ body {
 	position: relative;
 }
 .visualization {
-	display: -webkit-flex;
 	display: flex;
-	-webkit-flex-direction: column;
 	flex-direction: column;
-	-webkit-justify-content: center;
 	justify-content: center;
-	-webkit-align-items: center;
 	align-items: center;
 	position: relative;
 	margin-top: 22px;
@@ -521,7 +475,6 @@ body {
 	width: 10%;
 	height: 100%;
 	opacity: 1;
-	-webkit-transition: opacity .1s;
 	transition: opacity .1s;
 }
 .visualization-stem::before {
@@ -549,7 +502,6 @@ body {
 	width: 70%;
 	height: 100%;
 	opacity: 1;
-	-webkit-transition: opacity .1s;
 	transition: opacity .1s;
 	background: white;
 }
@@ -734,7 +686,6 @@ body {
 }
 .hidden .weight-hide {
 	margin-top: 18px;
-	-webkit-transition: none;
 	transition: none;
 }
 .hidden .weight-hide:hover {
@@ -756,11 +707,8 @@ body {
 /* limit axis size on big screen and give it more space */
 @media (min-width: 1400px) and (min-height: 640px) {
 	.wrapper {
-		display: -webkit-flex;
 		display: flex;
-		-webkit-justify-content: center;
 		justify-content: center;
-		-webkit-align-items: center;
 		align-items: center;
 		height: 100%;
 	}
