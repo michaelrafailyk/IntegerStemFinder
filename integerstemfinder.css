@@ -16,6 +16,7 @@ body {
 	font-family: Helvetica, Arial, sans-serif;
 	font-size: 12px;
 	line-height: 1em;
+	-webkit-user-select: none;
 	user-select: none;
 }
 
@@ -293,6 +294,7 @@ body {
 	border: none;
 	outline: none;
 	text-decoration: none;
+	-webkit-user-select: text;
 	user-select: text;
 	transition: background .1s;
 }
