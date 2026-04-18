@@ -1,6 +1,6 @@
 /*
 
-	IntegerStemFinder v1.3.1
+	IntegerStemFinder v1.3.2
 	Licensed under the MIT License
 	Developed by Michael Rafailyk in 2025
 	https://github.com/michaelrafailyk/IntegerStemFinder
@@ -650,7 +650,6 @@ let axis = {
 				axis.weights.rounded = true;
 				for (let i = 0; i < stems_sidebearings.length; i++) {
 					if (stems_sidebearings[i].value.length) {
-						stems_sidebearings[i].setAttribute('data-raw', stems_sidebearings[i].value);
 						stems_sidebearings[i].value = Math.round(stems_sidebearings[i].value);
 					}
 				}
@@ -662,7 +661,6 @@ let axis = {
 				for (let i = 0; i < stems_sidebearings.length; i++) {
 					if (stems_sidebearings[i].value.length && stems_sidebearings[i].hasAttribute('data-raw')) {
 						stems_sidebearings[i].value = stems_sidebearings[i].getAttribute('data-raw');
-						stems_sidebearings[i].removeAttribute('data-raw');
 					}
 				}
 			}
