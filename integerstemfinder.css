@@ -288,6 +288,7 @@ body {
 	color: inherit;
 	background: white;
 	transition: color .1s;
+	-webkit-appearance: none;
 	appearance: none;
 	box-shadow: none;
 	border-radius: 4px;
