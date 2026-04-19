@@ -1,6 +1,6 @@
 # Integer Stem Finder
 
-A tool for planning weight interpolation or extrapolation, with the ability to adjust instances after interpolation and to easily find the closest integer (or closest to integer) stem or sidebearing. Features: interpolate and extrapolate; switch any weight to master; hide any weight from axis; drag the weight to change its position; adjust instance after interpolation; find a closest integer stem or sidebearing; switch between accurate and rounded values; see a visualization of stems and sidebearings; compare interpolation strategies using sets.
+A tool for planning weight interpolation or extrapolation, with the ability to adjust instances after interpolation and to easily find the closest integer (or closest to integer) stem by pressing `+` and `-` stem buttons or entering value manually. Features: interpolate and extrapolate; switch any weight to master; hide any weight from axis; drag the weight to change its position; adjust instance after interpolation; find a closest integer stem; switch between accurate and rounded values; rename master/instance name; see a visualization of stems and sidebearings; compare interpolation strategies using sets.
 
 ## Links
 
@@ -38,6 +38,7 @@ The idea of editable instances is inspired by a [comment of Abraham Lee](https:/
 
 - Save the current axis state to a set by clicking the `Save set` button. This way you can compare your interpolation strategies without losing any adjustments. Six different sets can be saved. Sets are names after letters of the Greek alphabet. Any set can be removed by clicking the `x` button next to the set name.
 
+- Rename any master/instance name from default Weight name to any custom name. Could be useful for other (than Weight) axes.
 - Bring weight visually to front by clicking on it anywhere. It can be useful if the weights are positioned too close and overlap each other.
 - Switch from accurate (two decimal places) to rounded stems and sidebearings by clicking the `Rounded` button.
 - See a visualization of the stem thickness with a sidebearings around it, under the weight.
@@ -64,6 +65,10 @@ defaults: [
 - Green – instance
 - Blue – adjusted instance
 - Gray – hidden weight
+
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for version history.
 
 ## Donate
 

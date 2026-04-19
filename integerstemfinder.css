@@ -63,14 +63,6 @@ body {
 	cursor: pointer;
 	transition: color .1s;
 }
-.numeric {
-	position: absolute;
-	left: 5px;
-	top: 0;
-	text-align: left;
-	cursor: pointer;
-	transition: color .1s;
-}
 .rounded {
 	position: absolute;
 	left: 5px;
@@ -220,23 +212,21 @@ body {
 }
 .weight-name {
 	position: relative;
-	margin-bottom: 22px;
-	cursor: default;
+	min-width: 42px;
+	height: 12px;
+	margin: -3px 0 19px 0;
+	padding: 3px 4px;
+	border-radius: 4px;
+	background: white;
 	font-weight: bold;
 	white-space: nowrap;
-	background: white;
-}
-.weight-name-text {
-	display: block;
-}
-.weight-name-number {
-	display: none;
-}
-.axis-numeric .weight-name-text {
-	display: none;
-}
-.axis-numeric .weight-name-number {
-	display: block;
+	cursor: text;
+	-webkit-appearance: none;
+	appearance: none;
+	box-shadow: none;
+	outline: none;
+	text-decoration: none;
+	transition: background .1s;
 }
 .weight-master {
 	position: relative;
@@ -539,7 +529,6 @@ body {
 
 /* colors */
 .progressions,
-.numeric,
 .rounded,
 .sets {
 	color: #bbbbbb;
@@ -555,8 +544,6 @@ body {
 .progression:hover,
 .progression-linear:hover,
 .progression-active,
-.numeric:hover,
-.numeric-active,
 .rounded:hover,
 .rounded-active,
 .set-name:hover,
@@ -598,7 +585,11 @@ body {
 	background: black;
 }
 .master input:enabled:hover,
-.master input:focus {
+.master input:focus,
+.master .weight-name:hover,
+.master .weight-name:focus,
+.instance.hidden .weight-name:hover,
+.instance.hidden .weight-name:focus {
 	background: #f3f3f3;
 }
 .master .weight-stem-minus,
@@ -627,7 +618,9 @@ body {
 	background: #bce6db;
 }
 .instance input:enabled:hover,
-.instance input:focus {
+.instance input:focus,
+.instance .weight-name:hover,
+.instance .weight-name:focus {
 	background: #ebf8f5;
 }
 
@@ -652,7 +645,9 @@ body {
 	background: #b4d2ea;
 }
 .adjusted input:enabled:hover,
-.adjusted input:focus {
+.adjusted input:focus,
+.adjusted .weight-name:hover,
+.adjusted .weight-name:focus {
 	background: #eef6fd;
 }
 
@@ -724,7 +719,6 @@ body {
 }
 @media (min-width: 1660px) {
 	.progressions,
-	.numeric,
 	.rounded {
 		left: -10%;
 	}

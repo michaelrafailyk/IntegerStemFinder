@@ -1,6 +1,6 @@
 /*
 
-	IntegerStemFinder v1.3.2
+	IntegerStemFinder v1.4
 	Licensed under the MIT License
 	Developed by Michael Rafailyk in 2025
 	https://github.com/michaelrafailyk/IntegerStemFinder
@@ -29,7 +29,6 @@ let axis = {
 		router: {},
 		masters: [],
 		onlyextrememasters: false,
-		numeric: false,
 		rounded: false
 	},
 
@@ -60,13 +59,12 @@ let axis = {
 			
 			// defaults
 			// set default values
-			let name = axis.weights.all[i].querySelector('.weight-name-text');
-			let numb = axis.weights.all[i].querySelector('.weight-name-number');
+			let name = axis.weights.all[i].querySelector('.weight-name');
 			let position = axis.weights.all[i].querySelector('.weight-position');
 			let stem = axis.weights.all[i].querySelector('.weight-stem');
 			let sidebearing = axis.weights.all[i].querySelector('.weight-sidebearing');
 			name.textContent = axis.weights.defaults[i].name;
-			numb.textContent = i + 1;
+			name.setAttribute('data-number', i + 1);
 			axis.weights.all[i].style.left = axis.weights.defaults[i].position / 10 + '%';
 			position.value = axis.weights.defaults[i].position;
 			if (axis.weights.defaults[i].master && axis.weights.defaults[i].stem) {
@@ -584,59 +582,116 @@ let axis = {
 		// weights loop end
 		}
 		
-		// check input text in a fields
-		let fields = document.getElementsByTagName('input');
-		for (let i = 0; i < fields.length; i++) {
-			// allow to type numbers and press modifier keys
-			fields[i].addEventListener('keydown', function(e) {
-				// allow delete, backspace, tab, escape, enter, minus, ctrl/cmd+a/x/c/v, home, end, left, right, up, down
-				if (e.keyCode == 46 || e.keyCode == 8 || e.keyCode == 9 || e.keyCode == 27 || e.keyCode == 13 || ((e.keyCode == 65 || e.keyCode == 67 || e.keyCode == 86 || e.keyCode == 88) && (e.ctrlKey === true || e.metaKey === true)) || (e.keyCode >= 35 && e.keyCode <= 40)) {
+		// validation checks
+		// check entered text for name of master/instance
+		let names = document.querySelectorAll('.weight-name');
+		let names_control_keys = new Set(['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End', 'Tab', 'Escape']);
+		let names_max_length = 20;
+		for (let i = 0; i < names.length; i++) {
+			names[i].addEventListener('keydown', function(e) {
+				// allow control/navigation keys
+				if (names_control_keys.has(e.key)) return;
+				// allow Ctrl/Cmd shortcuts (copy, paste, undo, etc)
+				if (e.ctrlKey || e.metaKey) return;
+				// Enter or Escape ends the editing
+				if (e.key === 'Enter' || e.key === 'Escape') {
+					e.preventDefault();
+					names[i].blur();
 					return;
-				// allow the minus sign (hyphen) for sidebearing fields
-				} else if (e.keyCode == 189 && fields[i].classList.contains('weight-sidebearing')) {
+				}
+				// allow only letters, numbers, space
+				if (!/^[A-Za-z0-9 ]$/.test(e.key)) {
+					e.preventDefault();
 					return;
-				} else {
-					// prevent non-numbers
-					if (e.shiftKey || (e.keyCode < 48 || e.keyCode > 57) && (e.keyCode < 96 || e.keyCode > 105 )) {
-						e.preventDefault();
-					}
 				}
 			});
-			// input length limitations
-			fields[i].addEventListener('keyup', function(e) {
-				// remove double zero at the beginning
-				if (fields[i].value.length > 1 && fields[i].value.substring(0, 1) == '0') {
-					fields[i].value = 0;
+			names[i].addEventListener('paste', function(e) {
+				// remove everything except letters, numbers, and space character
+				e.preventDefault();
+				let text = e.clipboardData.getData('text/plain');
+				text = text.replace(/[^A-Za-z0-9 ]+/g, '');
+				const sel = window.getSelection();
+				if (!sel.rangeCount) return;
+				const selected = sel.toString().length;
+				const current = names[i].textContent.length;
+				const available = names_max_length - (current - selected);
+				if (available <= 0) return;
+				text = text.substring(0, available);
+				sel.deleteFromDocument();
+				sel.getRangeAt(0).insertNode(document.createTextNode(text));
+				sel.collapseToEnd();
+			});
+			names[i].addEventListener('input', function() {
+				// limit max length
+				let text = names[i].textContent;
+				if (text.length <= names_max_length) return;
+				const sel = window.getSelection();
+				let offset = sel.rangeCount ? sel.getRangeAt(0).startOffset : names_max_length;
+				names[i].textContent = text.substring(0, names_max_length);
+				const range = document.createRange();
+				const textNode = names[i].childNodes[0];
+				if (textNode) {
+					range.setStart(textNode, Math.min(offset, textNode.length));
+					range.collapse(true);
+					sel.removeAllRanges();
+					sel.addRange(range);
 				}
-				// do not allow to type the numbers with decimals (period character)
-				if (fields[i].value.indexOf('.') !== -1) {
-					fields[i].value = fields[i].value.substring(0, 7);
-				}
-				// limit input length (with integer values) to 4 numbers
-				else if (fields[i].value.length > 4) {
-					fields[i].value = fields[i].value.substring(0, 4);
+			});
+			names[i].addEventListener('blur', function() {
+				// if the field is empty, restore its default ID number
+				if (names[i].textContent == '') {
+					names[i].textContent = names[i].getAttribute('data-number');
 				}
 			});
 		}
 		
-		// numeric
-		// toggle weight names into number id of master/instance
-		let numeric = document.querySelector('.numeric');
-		let axis_element = document.querySelector('.axis');
-		numeric.addEventListener('click', function() {
-			// switch to number labels
-			if (!numeric.classList.contains('numeric-active')) {
-				axis_element.classList.add('axis-numeric');
-				numeric.classList.add('numeric-active');
-				axis.weights.numeric = true;
-			}
-			// switch to text labels
-			else {
-				axis_element.classList.remove('axis-numeric');
-				numeric.classList.remove('numeric-active');
-				axis.weights.numeric = false;
-			}
-		});
+		// validation checks
+		// check entered text for input fields
+		let fields = document.getElementsByTagName('input');
+		let fields_control_keys = new Set(['Backspace', 'Delete', 'Tab', 'Escape', 'Enter', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End']);
+		for (let i = 0; i < fields.length; i++) {
+			fields[i].addEventListener('keydown', function(e) {
+				// allow control/navigation keys
+				if (fields_control_keys.has(e.key)) return;
+				// allow Ctrl/Cmd shortcuts (copy, paste, undo, redo, select all)
+				if (e.ctrlKey || e.metaKey) return;
+				// allow minus only for sidebearing fields for allowing to type the negative numbers
+				if (e.key === '-' && fields[i].classList.contains('weight-sidebearing')) return;
+				// allow digits only
+				if (!/^[0-9]$/.test(e.key)) {
+					e.preventDefault();
+				}
+			});
+			fields[i].addEventListener('input', function() {
+				let value = fields[i].value;
+				// remove invalid chars
+				if (fields[i].classList.contains('weight-sidebearing')) {
+					value = value.replace(/[^0-9.-]/g, '');
+				} else {
+					value = value.replace(/[^0-9.]/g, '');
+				}
+				// remove decimals
+				const dotIndex = value.indexOf('.');
+				if (dotIndex !== -1) {
+					value = value.substring(0, dotIndex);
+				}
+				// handle minus (only one, only at start)
+				if (value.includes('-')) {
+					value = value.replace(/(?!^)-/g, '');
+				}
+				// remove leading zeroes (except single zero)
+				if (value.length > 1 && value.startsWith('0')) {
+					value = '0';
+				}
+				// limit to 4 digits (excluding minus)
+				const isNegative = value.startsWith('-');
+				let digits = isNegative ? value.slice(1) : value;
+				if (digits.length > 4) {
+					digits = digits.substring(0, 4);
+				}
+				fields[i].value = isNegative ? '-' + digits : digits;
+			});
+		}
 		
 		// rounded
 		// toggle stems and sidebearings numbers from more accurate decimals to rounded integer
@@ -644,7 +699,7 @@ let axis = {
 		rounded.addEventListener('click', function() {
 			// get list of all stem and sidebearing inputs
 			let stems_sidebearings = document.querySelectorAll('.weight-stem, .weight-sidebearing');
-			// round
+			// round values
 			if (!rounded.classList.contains('rounded-active')) {
 				rounded.classList.add('rounded-active');
 				axis.weights.rounded = true;
@@ -654,7 +709,7 @@ let axis = {
 					}
 				}
 			}
-			// unround
+			// restore unrounded values
 			else {
 				rounded.classList.remove('rounded-active');
 				axis.weights.rounded = false;

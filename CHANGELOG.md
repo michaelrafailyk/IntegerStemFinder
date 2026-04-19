@@ -1,3 +1,8 @@
+## 1.4
+- The names of Masters/Instances are now editable. You can click on master/instance name (Thin, Regular, Bold, etc) and rename it as you wish. It could be useful for working with the other (than Weight) axes. So if you work with Optical Size axis, the names like `OS 12` and `OS 48` will be more useful. Allowed characters for name fields: `A-Z` `a-z` `0-9` and the Space ` ` character. Max length is 20 characters including spaces.
+- "Numeric" button is now removed as redundant because the user now can rename the names labels anyway.
+- Inputs fields validation is reworked according to modern standards. The `keyCodes` are not used now.
+
 ## 1.3.2
 - Remove deprecated `-webkit-` dependencies in CSS.
 
