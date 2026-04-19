@@ -18,6 +18,7 @@ let axis = {
 			{position: 200, name: 'Extra Light'},
 			{position: 300, name: 'Light'},
 			{position: 400, name: 'Regular'},
+			// {position: 450, name: 'Book', hidden: true},
 			{position: 500, name: 'Medium'},
 			{position: 600, name: 'Semi Bold'},
 			{position: 700, name: 'Bold'},
@@ -64,7 +65,7 @@ let axis = {
 			let stem = axis.weights.all[i].querySelector('.weight-stem');
 			let sidebearing = axis.weights.all[i].querySelector('.weight-sidebearing');
 			name.textContent = axis.weights.defaults[i].name;
-			name.setAttribute('data-number', i + 1);
+			name.setAttribute('data-name', axis.weights.defaults[i].name);
 			axis.weights.all[i].style.left = axis.weights.defaults[i].position / 10 + '%';
 			position.value = axis.weights.defaults[i].position;
 			if (axis.weights.defaults[i].master && axis.weights.defaults[i].stem) {
@@ -638,9 +639,9 @@ let axis = {
 				}
 			});
 			names[i].addEventListener('blur', function() {
-				// if the field is empty, restore its default ID number
+				// if the field is empty, restore its default name
 				if (names[i].textContent == '') {
-					names[i].textContent = names[i].getAttribute('data-number');
+					names[i].textContent = names[i].getAttribute('data-name');
 				}
 			});
 		}
