@@ -37,6 +37,7 @@ The idea of editable instances is inspired by a [comment of Abraham Lee](https:/
 - All the fields are editable for masters (and for instances, if contain values).
 
 - Save the current axis state to a set by clicking the `Save set` button. This way you can compare your interpolation strategies without losing any adjustments. Six different sets can be saved. Sets are names after letters of the Greek alphabet. Any set can be removed by clicking the `x` button next to the set name.
+- Rewrite saved set by clicking the `Rewrite` button (arrow down icon at the right side of the set name). This way you can made any changes in already saved set.
 
 - Rename any master/instance name from default Weight name to any custom name. Could be useful for other (than Weight) axes.
 - Bring weight visually to front by clicking on it anywhere. It can be useful if the weights are positioned too close and overlap each other.
