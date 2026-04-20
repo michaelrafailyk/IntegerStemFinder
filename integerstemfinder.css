@@ -86,23 +86,19 @@ body {
 	cursor: pointer;
 	transition: color .1s;
 }
-.sets-save::before {
-	content: "";
-	position: absolute;
-	right: 2px;
-	top: 5px;
-	width: 8px;
-	height: 2px;
-	transition: background .1s;
-}
 .sets-save::after {
 	content: "";
 	position: absolute;
-	right: 5px;
-	top: 2px;
-	width: 2px;
-	height: 8px;
-	transition: background .1s;
+	right: 0;
+	top: 0;
+	width: 12px;
+	height: 12px;
+	background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'><path d='M2 6 H10 M6 2 V10' stroke='black' stroke-width='1.5' fill='none'/></svg>");
+	opacity: .27;
+	transition: opacity .1s;
+}
+.sets-save:hover::after {
+	opacity: 1;
 }
 .sets-save-hidden {
 	display: none;
@@ -122,42 +118,46 @@ body {
 .set-active .set-name {
 	cursor: default;
 }
-.set-remove {
+.set-rewrite {
 	position: relative;
 	display: inline-block;
 	vertical-align: top;
 	width: 12px;
 	height: 12px;
-	transform: translateX(-0.5px);
+	background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'><path d='M2.5 5.5 L6 9 L9.5 5.5' stroke='black' stroke-width='1.5' fill='none'/><path d='M6 8.5 L6 2' stroke='black' stroke-width='1.5' fill='none'/></svg>");
 	cursor: pointer;
+	opacity: .27;
 }
-.set-remove::before {
-	content: "";
+.set-rewrite:hover {
+	opacity: 1;
+}
+.set-remove {
 	position: absolute;
-	left: 2px;
-	top: 5px;
-	width: 9px;
-	height: 2px;
-	transform: rotate(45deg);
-	transition: background .1s;
+	display: block;
+	top: 0;
+	left: 100%;
+	width: 12px;
+	height: 12px;
+	background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'><path d='M2.5 2.5 L9.5 9.5 M9.5 2.5 L2.5 9.5' stroke='black' stroke-width='1.5' fill='none'/></svg>");
+	cursor: pointer;
+	opacity: .27;
 }
-.set-remove::after {
-	content: "";
-	position: absolute;
-	left: 2px;
-	top: 5px;
-	width: 9px;
-	height: 2px;
-	transform: rotate(-45deg);
-	transition: background .1s;
+.set-remove:hover {
+	opacity: 1;
 }
-.set-remove-label {
+.set-icon-label {
 	display: none;
 	position: absolute;
-	left: 16px;
+	left: 100%;
+	top: 0;
+	padding-left: 4px;
+	background: white;
+	pointer-events: none;
 }
-.set-remove:hover .set-remove-label {
+.set-rewrite:hover .set-icon-label,
+.set-remove:hover .set-icon-label {
 	display: block;
+	z-index: 2;
 }
 .weight {
 	z-index: 2;
@@ -533,12 +533,6 @@ body {
 .sets {
 	color: #bbbbbb;
 }
-.sets-save::before,
-.sets-save::after,
-.set-remove::before,
-.set-remove::after {
-	background: #bbbbbb;
-}
 
 /* master (and hover) color */
 .progression:hover,
@@ -549,16 +543,12 @@ body {
 .set-name:hover,
 .set-active .set-name,
 .sets-save:hover,
-.set-remove-label,
+.set-icon-label,
 .master,
 .weight-master:hover,
 .weight-hide:hover {
 	color: black;
 }
-.sets-save:hover::before,
-.sets-save:hover::after,
-.set-remove:hover::before,
-.set-remove:hover::after,
 .weight-position-minus:hover::before,
 .weight-position-plus:hover::before,
 .weight-position-plus:hover::after,

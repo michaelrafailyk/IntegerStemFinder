@@ -1,6 +1,6 @@
 /*
 
-	IntegerStemFinder v1.4
+	IntegerStemFinder v1.5
 	Licensed under the MIT License
 	Developed by Michael Rafailyk in 2025
 	https://github.com/michaelrafailyk/IntegerStemFinder
@@ -2495,15 +2495,20 @@ let axis = {
 			let set_restore = document.createElement('div');
 			let set_restore_label = document.createElement('span');
 			let set_restore_label_ending = document.createTextNode(' set');
+			let set_rewrite = document.createElement('div');
+			let set_rewrite_label = document.createElement('div');
 			let set_remove = document.createElement('div');
 			let set_remove_label = document.createElement('div');
 			set_button.classList.add('set');
 			set_button.classList.add('set-active');
 			set_restore.classList.add('set-name');
 			set_restore_label.classList.add('set-label');
+			set_rewrite.classList.add('set-rewrite');
+			set_rewrite_label.classList.add('set-icon-label');
 			set_remove.classList.add('set-remove');
-			set_remove_label.classList.add('set-remove-label');
+			set_remove_label.classList.add('set-icon-label');
 			set_restore_label.textContent = set_label;
+			set_rewrite_label.textContent = 'Rewrite';
 			set_remove_label.textContent = 'Remove';
 			set_restore.addEventListener('click', function() {
 				if (!set_button.classList.contains('set-active')) {
@@ -2511,14 +2516,20 @@ let axis = {
 					axis.sets.restoreset(index);
 				}
 			});
+			set_rewrite.addEventListener('click', function() {
+				let index = [].indexOf.call(set_button.parentNode.children, set_button);
+				axis.sets.rewriteset(index);
+			});
 			set_remove.addEventListener('click', function() {
 				let index = [].indexOf.call(set_button.parentNode.children, set_button);
 				axis.sets.removeset(set_button, index);
 			});
 			set_restore.appendChild(set_restore_label);
 			set_restore.appendChild(set_restore_label_ending);
+			set_rewrite.appendChild(set_rewrite_label);
 			set_remove.appendChild(set_remove_label);
 			set_button.appendChild(set_restore);
+			set_button.appendChild(set_rewrite);
 			set_button.appendChild(set_remove);
 			axis.sets.highlight();
 			axis.sets.elements.list.appendChild(set_button);
@@ -2526,6 +2537,13 @@ let axis = {
 			if (axis.sets.list.length === axis.sets.labels.length) {
 				axis.sets.elements.save.classList.add('sets-save-hidden');
 			}
+		},
+		
+		rewriteset: function(index) {
+			// gather set and rewrite it in sets list
+			axis.sets.list[index] = axis.sets.gatherset();
+			// highlight current set
+			axis.sets.highlight(index);
 		},
 		
 		restoreset: function(index) {

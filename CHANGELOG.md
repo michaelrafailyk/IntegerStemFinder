@@ -1,6 +1,9 @@
+## 1.5
+- Any saved set now can be rewritten in place, by pressing Rewrite button (arrow down icon) at the right side of set name. So, if you with to correct some things in already saved set, it is possible now.
+
 ## 1.4
 - The names of Masters/Instances are now editable. You can click on master/instance name (Thin, Regular, Bold, etc) and rename it as you wish. It could be useful for working with the other (than Weight) axes. So if you work with Optical Size axis, the names like `OS 12` and `OS 48` will be more useful. Allowed characters for name fields: `A-Z` `a-z` `0-9` and the Space ` ` character. Max length is 20 characters including spaces.
-- "Numeric" button is now removed as redundant because the user now can rename the names labels anyway.
+- "Numeric" temporary button is now removed as redundant because the user now can rename the names labels anyway.
 - Inputs fields validation is reworked according to modern standards. The `keyCodes` are not used now.
 
 ## 1.3.2
@@ -11,7 +14,7 @@
 - "Rounded" button now global and independent from saved sets state.
 
 ## 1.2
-- "Numeric" button added for switching between weight names and instance/master number.
+- "Numeric" temporary button added for switching between weight names and instance/master number.
 
 ## 1.0.14
 - "Master/Instance" tips added on mouse hover to highlight the option to toggle between instance and master.
